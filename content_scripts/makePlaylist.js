@@ -8,10 +8,9 @@
 
     let playlistString = "";
     let baseUrl = "https://www.youtube.com/watch_videos?video_ids=";
-    // let playlistPreview = document.getElementById("playlist-preview");
     let playlistLink = document.getElementById("playlist-link");
 
-     // function createPlaylist(){
+     // function createPlaylistLink(){
     //     let videoList = localStorage.getItem("playlistString");
     //     let fullUrl = baseUrl + videoList;
     //     playlistLink.href = fullUrl;

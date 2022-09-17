@@ -3,7 +3,7 @@
     background: dodgerblue;
     display: flex;
     /* place-items: center; */
-    width: 100%;
+    width: 700px;
     padding: 1em;
     font-size: 15px;
     gap: 1em;
@@ -30,7 +30,15 @@
     gap: 1em;
 }
 
-.playlist-video-image{
+.video-card{
+    background: white; 
+    border-radius: 10px; 
+    width: 120px;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.playlist-preview-image{
     width: 120px;
     height: 90px;
 }
@@ -44,8 +52,3 @@ button{
     border-radius: 5px;
 }
 
-.video-card{
-    background: white; 
-    border-radius: 10px; 
-    width: 120px;
-}
