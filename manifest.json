@@ -21,7 +21,13 @@
       }
     ],
 
-    "permissions": ["contextMenus"]
+    "permissions": ["contextMenus", "activeTab"],
+
+    "browser_action": {
+      "default_icon": "icons/beasts-32.png",
+      "default_title": "YouTube Playlist Maker",
+      "default_popup": "popup/playlist.html"
+    }
 
   
   }

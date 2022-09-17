@@ -1,0 +1,51 @@
+.playlist-ui{
+    position: relative;
+    background: dodgerblue;
+    display: flex;
+    /* place-items: center; */
+    width: 100%;
+    padding: 1em;
+    font-size: 15px;
+    gap: 1em;
+}
+
+.playlist-preview-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: red;
+    height: 100%;
+    width: 100%;
+}
+
+.playlist-header{
+    text-align: center;
+}
+
+.playlist-preview{
+    background: gainsboro;
+    width: 300px;
+    height: 100%;
+    display: none;
+    gap: 1em;
+}
+
+.playlist-video-image{
+    width: 120px;
+    height: 90px;
+}
+
+button{
+    background: gold;
+    padding: 1em;
+    font-size: 15px;
+    cursor: pointer;
+    border: 0;
+    border-radius: 5px;
+}
+
+.video-card{
+    background: white; 
+    border-radius: 10px; 
+    width: 120px;
+}
