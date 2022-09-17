@@ -8,15 +8,16 @@
 
     let playlistString = "";
     let baseUrl = "https://www.youtube.com/watch_videos?video_ids=";
-    let playlistLink = document.getElementById("playlist-link");
+    // let playlistLink = document.getElementById("playlist-link");
 
-     // function createPlaylistLink(){
-    //     let videoList = localStorage.getItem("playlistString");
-    //     let fullUrl = baseUrl + videoList;
-    //     playlistLink.href = fullUrl;
-    //     navigator.clipboard.writeText(fullUrl);
-    //     alert("Playlist generated and copied to clipboard")
-    // }
+    function createPlaylistLink(){
+        let videoList = localStorage.getItem("playlistString");
+        let fullUrl = baseUrl + videoList;
+        console.log(fullUrl)
+        // playlistLink.href = fullUrl;
+        navigator.clipboard.writeText(fullUrl);
+        alert("Playlist generated and copied to clipboard")
+    }
     
     function addToLocalStorage(){
         let currentUrl = window.location.href;
@@ -43,20 +44,17 @@
         return videoDetails;
     }
 
-    getVideoDetails().then(details =>{
-        browser.runtime.onMessage.addListener((message) => {
+    browser.runtime.onMessage.addListener((message) => {
         if (message.command === "add") {
-            addToLocalStorage();
-            return Promise.resolve({
-                message: "video details fetched",
-                details: details
+            return getVideoDetails()    // adding "return" here solved the problem
+            .then(addToLocalStorage())
+            .then(details =>{
+                return Promise.resolve({message: "video details fetched", details: details})
             })
-        } 
-    });
+            .catch(error => console.log(error))
+        }else if(message.command === "link"){
+            createPlaylistLink();
+        }
     })
 
-    
-    
-
 })()
-

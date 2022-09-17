@@ -1,8 +1,8 @@
+var videoNumber = 1;
+
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-        
-        var videoNumber = 1;
-
+   
         function createVideoCard(info){
             let playlistPreview = document.getElementById("playlist-preview");
 
@@ -30,16 +30,27 @@ function listenForClicks() {
             })
         }
 
+        function link(tabs){
+            browser.tabs.sendMessage(tabs[0].id, {
+                command: "link",
+            })
+            .then(response => {
+                console.log(response) // empty for now
+            })
+        }
+
         if (e.target.id === "add-to-playlist") {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(add)
+        }else if(e.target.id === "create-link"){
+            browser.tabs.query({active: true, currentWindow: true})
+                .then(link)
         }
 
     })
 }
 
-
-
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(listenForClicks)
+    .then(console.log("EXTENSION CLICKED"))
     .catch();

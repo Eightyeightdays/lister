@@ -1,10 +1,15 @@
+* {
+    box-sizing: border-box;
+}
+
 .playlist-ui{
     position: relative;
     background: dodgerblue;
     display: flex;
-    /* place-items: center; */
+    place-items: center;
     width: 700px;
-    padding: 1em;
+    height: 193.5px;
+    /* padding: 1em; */
     font-size: 15px;
     gap: 1em;
 }
@@ -15,19 +20,21 @@
     flex-direction: column;
     background: red;
     height: 100%;
-    width: 100%;
+   width: 300px;
 }
 
 .playlist-header{
     text-align: center;
 }
 
-.playlist-preview{
+#playlist-preview{
     background: gainsboro;
-    width: 300px;
     height: 100%;
-    display: none;
+     width: 100%;
+    display: flex;
     gap: 1em;
+    padding: 0.5em;
+    overflow-x: scroll;
 }
 
 .video-card{
@@ -52,3 +59,8 @@ button{
     border-radius: 5px;
 }
 
+.playlist-video-author{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

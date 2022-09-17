@@ -21,7 +21,7 @@
       }
     ],
 
-    "permissions": ["contextMenus", "activeTab"],
+    "permissions": ["contextMenus", "activeTab", "clipboardWrite"],
 
     "browser_action": {
       "default_icon": "icons/beasts-32.png",
