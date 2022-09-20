@@ -63,16 +63,12 @@
             })
         return videoDetails;
     }
-
-    let myPort = browser.runtime.connect()  // establish a connection to the background script playlist.js
-    myPort.postMessage({message: "Hello from the YouTube page"}) // send a message
-
    
     browser.runtime.onMessage.addListener(message => {  // listen for messages from the popup
-        console.log(`Message from popup is: ${JSON.stringify(message)}}`)
+        console.log(JSON.stringify(message))
+
         if(message.command === "add name"){
             setPlaylistName(message.title)
-            console.log(`Message Received: ${JSON.stringify(message)}`)
         }else if(message.command === "add video") {
             return getVideoDetails()    // adding "return" here solved the problem
             .then(updateLocalStorage())
@@ -83,8 +79,10 @@
         }else if(message.command === "create link"){
             createPlaylistLink();
         }else{
-            console.log(message)
+            return;
+            // console.log("UNKNOWN MESSAGE")
         }
+
     })
 
 
@@ -123,14 +121,17 @@
     } 
     
 
-    function returnStorage(){
-        if(localStorage.getItem("allPlaylists")){
+    function returnStorage(message){
+        if(message.message === "return localStorage"){
+            console.log(message.message)
+           if(localStorage.getItem("allPlaylists")){
             browser.runtime.sendMessage({message: "Storage retrieved", storage: localStorage.getItem("allPlaylists")})
-        }else{
-            browser.runtime.sendMessage({message: "Storage is empty"})
+            }else{
+                browser.runtime.sendMessage({message: "Storage is empty"})
+            } 
         }
-        
     }
+
     browser.runtime.onMessage.addListener(returnStorage)
 
 })()

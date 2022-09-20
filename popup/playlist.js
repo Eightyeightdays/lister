@@ -1,5 +1,4 @@
 var videoNumber = 1;
-let portOut;
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
@@ -20,10 +19,13 @@ function listenForClicks() {
         }
 
         function addName(tabs) {
-            console.log("ADD NAME CLICKED")
+            let title = document.getElementById("playlist-name-input").value;
+            let element = `<div class="list-title">${title}</div>`;
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "add name",
-                title: document.getElementById("playlist-name-input").value})
+                title: title
+            })
+            .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
             .then(document.getElementById("playlist-name-input").value = "");   // clear input field
         }
 
@@ -49,15 +51,15 @@ function listenForClicks() {
             })
         }
 
-        if (e.target.id === "add-to-playlist") {
+        if(e.target.id === "add-playlist-name"){
+            browser.tabs.query({active: true, currentWindow: true})
+                .then(addName)
+        }else if (e.target.id === "add-to-playlist") {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addVideo)
         }else if(e.target.id === "create-link"){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(createLink)
-        }else if(e.target.id === "add-playlist-name"){
-            browser.tabs.query({active: true, currentWindow: true})
-                .then(addName)
         }else if(e.target.id === ""){
 
         }
@@ -68,7 +70,7 @@ function listenForClicks() {
 
 
 
-function getInitialStorage(){
+function getInitialStorage(){   // runs every time popup is opened
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {message: "return localStorage"}))
 }
@@ -86,6 +88,7 @@ function createTitlesList(data){
 
 browser.runtime.onMessage.addListener(message =>{
     if(message.message === "Storage retrieved"){
+        console.log("Storage retrieved, UI BEING REBUILT")
         createTitlesList(JSON.parse(message.storage))
     }else if(message.message === "Storage is empty"){
         console.log("Nothing in storage");
@@ -99,6 +102,7 @@ browser.runtime.onConnect.addListener(getInitialStorage)
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(getInitialStorage)
+    .then(console.log("EXECUTED"))
     .then(listenForClicks)
     .catch();
 
