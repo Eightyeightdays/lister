@@ -19,22 +19,33 @@
         alert("Playlist generated and copied to clipboard")
     }
     
-    
+    function setPlaylistName(name){
+        let newList = {
+            playlistName: name,
+            playlistStrings: [],
+            dateCreated: Date.now(),
+            dateEdited: "",
+            lastAccessed: ""
+            }
 
-    function addToLocalStorage(playlist){
+        if(!localStorage.getItem("allPlaylists")){  // if no playlist exists
+            localStorage.setItem("allPlaylists", JSON.stringify([newList]));    // initialise localStorage with allPlaylists
+        }else{
+            let tempStorage = JSON.parse(localStorage.getItem("allPlaylists")); // otherwise get existing storage
+            tempStorage.push(newList);      // add new list
+            localStorage.setItem("allPlaylists", JSON.stringify(tempStorage))   // update localStorage
+        }
+        
+        
+    }
+
+    function updateLocalStorage(){
         let currentUrl = window.location.href;
         let start = currentUrl.search(/=/) + 1;
         let end = start + 12;
         let currentId = currentUrl.substring(start, end) + ",";
         playlistString += currentId;
-        localStorage.setItem("allPlaylists", JSON.stringify([{
-            playlistName: playlist,
-            playlistString: playlistString,
-            dateCreated: Date.now(),
-            dateEdited: "",
-            lastAccessed: ""
-        }
-        ]));
+        localStorage.setItem("allPlaylists", playlistString);
     }
 
     async function getVideoDetails(){
@@ -53,17 +64,73 @@
         return videoDetails;
     }
 
-    browser.runtime.onMessage.addListener((message) => {
-        if (message.command === "add") {
+    let myPort = browser.runtime.connect()  // establish a connection to the background script playlist.js
+    myPort.postMessage({message: "Hello from the YouTube page"}) // send a message
+
+   
+    browser.runtime.onMessage.addListener(message => {  // listen for messages from the popup
+        console.log(`Message from popup is: ${JSON.stringify(message)}}`)
+        if(message.command === "add name"){
+            setPlaylistName(message.title)
+            console.log(`Message Received: ${JSON.stringify(message)}`)
+        }else if(message.command === "add video") {
             return getVideoDetails()    // adding "return" here solved the problem
-            .then(addToLocalStorage(message.title))
+            .then(updateLocalStorage())
             .then(details =>{
                 return Promise.resolve({message: "video details fetched", details: details})
             })
             .catch(error => console.log(error))
-        }else if(message.command === "link"){
+        }else if(message.command === "create link"){
             createPlaylistLink();
+        }else{
+            console.log(message)
         }
     })
+
+
+    // check if localStorage is available on the browser
+    function storageAvailable(type) {
+        let storage;
+        try {
+            storage = window[type];
+            const x = '__storage_test__';
+            storage.setItem(x, x);  
+            storage.removeItem(x);
+            return true;
+        }
+        catch (e) {
+            return e instanceof DOMException && (
+                // everything except Firefox
+                e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                (storage && storage.length !== 0);
+        }
+        
+    }
+    
+    if(storageAvailable('localStorage')) {
+        console.log("localStorage is available on this browser");
+    }
+    else{
+        console.log("Attention, localStorage is not available on this browser!");
+    } 
+    
+
+    function returnStorage(){
+        if(localStorage.getItem("allPlaylists")){
+            browser.runtime.sendMessage({message: "Storage retrieved", storage: localStorage.getItem("allPlaylists")})
+        }else{
+            browser.runtime.sendMessage({message: "Storage is empty"})
+        }
+        
+    }
+    browser.runtime.onMessage.addListener(returnStorage)
 
 })()

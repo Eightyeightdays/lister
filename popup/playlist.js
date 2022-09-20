@@ -1,4 +1,5 @@
 var videoNumber = 1;
+let portOut;
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
@@ -18,22 +19,31 @@ function listenForClicks() {
             videoNumber++;  // increment id number
         }
 
-        function add(tabs) {
+        function addName(tabs) {
+            console.log("ADD NAME CLICKED")
             browser.tabs.sendMessage(tabs[0].id, {
-                command: "add",
-                title: document.getElementById("playlist-name-input").value
+                command: "add name",
+                title: document.getElementById("playlist-name-input").value})
+            .then(document.getElementById("playlist-name-input").value = "");   // clear input field
+        }
+
+        function addVideo(tabs) {
+            console.log("ADD VIDEO CLICKED")
+            browser.tabs.sendMessage(tabs[0].id, {
+                command: "add video",
             })
             .then(response => {
+                console.log(response)
                 if(response.message === "video details fetched"){
                     createVideoCard(response.details)
                 }
             })
         }
 
-        function link(tabs){
+        function createLink(tabs){
             browser.tabs.sendMessage(tabs[0].id, {
-                command: "link",
-            })
+                command: "create link",
+                })
             .then(response => {
                 console.log(response) // empty for now
             })
@@ -41,16 +51,54 @@ function listenForClicks() {
 
         if (e.target.id === "add-to-playlist") {
             browser.tabs.query({active: true, currentWindow: true})
-                .then(add)
+                .then(addVideo)
         }else if(e.target.id === "create-link"){
             browser.tabs.query({active: true, currentWindow: true})
-                .then(link)
+                .then(createLink)
+        }else if(e.target.id === "add-playlist-name"){
+            browser.tabs.query({active: true, currentWindow: true})
+                .then(addName)
+        }else if(e.target.id === ""){
+
         }
 
     })
 }
 
+
+
+
+function getInitialStorage(){
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {message: "return localStorage"}))
+}
+
+function initialiseUi(data){
+
+}
+
+function createTitlesList(data){
+    data.forEach(list => {
+        let title = `<div class="list-title">${list.playlistName}</div>`;
+        document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
+    });
+}
+
+browser.runtime.onMessage.addListener(message =>{
+    if(message.message === "Storage retrieved"){
+        createTitlesList(JSON.parse(message.storage))
+    }else if(message.message === "Storage is empty"){
+        console.log("Nothing in storage");
+        /// PROMPT USER TO CREATE A LIST
+        return;
+    }
+    
+})
+
+browser.runtime.onConnect.addListener(getInitialStorage)
+
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
+    .then(getInitialStorage)
     .then(listenForClicks)
-    .then(console.log("EXTENSION CLICKED"))
     .catch();
+
