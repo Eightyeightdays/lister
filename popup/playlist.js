@@ -21,10 +21,10 @@ function listenForClicks() {
         function add(tabs) {
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "add",
+                title: document.getElementById("playlist-name-input").value
             })
             .then(response => {
                 if(response.message === "video details fetched"){
-                    // alert(response.message + " " + response.details.title)
                     createVideoCard(response.details)
                 }
             })

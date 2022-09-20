@@ -19,13 +19,22 @@
         alert("Playlist generated and copied to clipboard")
     }
     
-    function addToLocalStorage(){
+    
+
+    function addToLocalStorage(playlist){
         let currentUrl = window.location.href;
         let start = currentUrl.search(/=/) + 1;
         let end = start + 12;
         let currentId = currentUrl.substring(start, end) + ",";
         playlistString += currentId;
-        localStorage.setItem("playlistString", playlistString);
+        localStorage.setItem("allPlaylists", JSON.stringify([{
+            playlistName: playlist,
+            playlistString: playlistString,
+            dateCreated: Date.now(),
+            dateEdited: "",
+            lastAccessed: ""
+        }
+        ]));
     }
 
     async function getVideoDetails(){
@@ -47,7 +56,7 @@
     browser.runtime.onMessage.addListener((message) => {
         if (message.command === "add") {
             return getVideoDetails()    // adding "return" here solved the problem
-            .then(addToLocalStorage())
+            .then(addToLocalStorage(message.title))
             .then(details =>{
                 return Promise.resolve({message: "video details fetched", details: details})
             })
