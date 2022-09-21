@@ -57,22 +57,38 @@ function listenForClicks() {
     })
 }
 
+let playlistPreview = document.getElementById("playlist-preview");
+
+
 function clearLocalStorage(){
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "clear localStorage"})) 
     .then(response => console.log(response.message)) 
 }
 
-function createVideoCard(info){
-    let playlistPreview = document.getElementById("playlist-preview");
+function createVideoCard(video){
+    console.log(video)   // {title, author, imgUrl}
+    // info.videos.forEach(video =>{
+    //     let card = `
+    //         <div class="video-card" id="playlist-video-${videoNumber}">
+    //             <div class="playlist-video-title">${video.title}</div>
+    //             <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
+    //             <div class="playlist-video-author">Uploaded by: ${video.author}</div>
+    //         </div>`;
+    //         playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
+    //         videoNumber++;  // increment id number
+    // })
+
+    
     let card = `
-    <div class="video-card" id="playlist-video-${videoNumber}">
-        <div class="playlist-video-title">${info.title}</div>
-        <img class="playlist-preview-image" src=${info.imgUrl} alt="${info.title}">
-        <div class="playlist-video-author">Uploaded by: ${info.author}</div>
-    </div>`;
-    playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
-    videoNumber++;  // increment id number
+        <div class="video-card" id="playlist-video-${videoNumber}">
+            <div class="playlist-video-title">${video.title}</div>
+            <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
+            <div class="playlist-video-author">Uploaded by: ${video.author}</div>
+        </div>`;
+        playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
+        videoNumber++;  // increment id number
+    
 }
 
 function getLocalStorage(){   // runs every time popup is opened    // localStorage is returned here
@@ -90,9 +106,11 @@ function getSelectedTitleData(playlistName){
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) // get storage
     .then(response=>{
-       response.storage.forEach(list =>{
+        removeCards();                                  // clear existing display
+        response.storage.forEach(list =>{
             if(list["playlistName"] === playlistName){  // find the matching playlist
-                createVideoCard(list)
+                //createVideoCard(list)                   // create cards for every video
+                list.videos.forEach(video => createVideoCard(video))
                 console.log("CREATED")
             }   
         }) 
@@ -106,6 +124,12 @@ function createTitlesList(data){
         let title = `<div class="list-title" id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
+}
+
+function removeCards(){
+    while(playlistPreview.firstChild){
+        playlistPreview.removeChild(playlistPreview.firstChild);
+    }
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})

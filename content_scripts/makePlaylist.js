@@ -86,9 +86,8 @@
         let index = tempData.findIndex(list => list.playlistName === id)
         console.log("INDEX: " + index)
         let tempList = tempData[index] //   find playlist with selected id
-        
+    
         console.log(tempList)
-
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
         tempList.playlistString = tempString;       // add temp string to temp list
@@ -101,13 +100,9 @@
         }
 
         tempList.videos.push(newVideo)  // add video to temp list
-        
         console.log(tempList)   // log updated object
-
         Object.assign(tempData[index], tempList)    // update the object in the tempData array
-
         localStorage.setItem("allPlaylists", JSON.stringify(tempData)); // update storage with tempData
-
         return data;    // to be accessed by next function
     }
 
@@ -140,9 +135,6 @@
                 updateCurrentList(details, message.id)
                 return Promise.resolve({message: "video details fetched", details: details})
             })
-            // .then(details =>{
-            //     return Promise.resolve({message: "video details fetched", details: details})
-            // })
             .catch(error => console.log(error))
         }else if(message.command === "create link"){
             createPlaylistLink();
