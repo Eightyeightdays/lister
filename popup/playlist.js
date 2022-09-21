@@ -32,9 +32,11 @@ function listenForClicks() {
         function createLink(tabs){
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "create link",
-                })
+                id: document.getElementById("current-playlist").textContent
+            })
             .then(response => {
-                console.log(response) // empty for now
+                console.log(response.url) // link to playlist
+                document.getElementById("playlist-link").href = response.url;
             })
         }
     
@@ -68,18 +70,7 @@ function clearLocalStorage(){
 
 function createVideoCard(video){
     console.log(video)   // {title, author, imgUrl}
-    // info.videos.forEach(video =>{
-    //     let card = `
-    //         <div class="video-card" id="playlist-video-${videoNumber}">
-    //             <div class="playlist-video-title">${video.title}</div>
-    //             <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
-    //             <div class="playlist-video-author">Uploaded by: ${video.author}</div>
-    //         </div>`;
-    //         playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
-    //         videoNumber++;  // increment id number
-    // })
-
-    
+   
     let card = `
         <div class="video-card" id="playlist-video-${videoNumber}">
             <div class="playlist-video-title">${video.title}</div>
@@ -88,12 +79,11 @@ function createVideoCard(video){
         </div>`;
         playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
         videoNumber++;  // increment id number
-    
 }
 
-function getLocalStorage(){   // runs every time popup is opened    // localStorage is returned here
+function getLocalStorage(){   // runs every time popup is opened    
     browser.tabs.query({active: true, currentWindow: true})
-    .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) // send message
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) 
     .then(response => createTitlesList(response.storage)) 
 }
 
@@ -108,9 +98,8 @@ function getSelectedTitleData(playlistName){
     .then(response=>{
         removeCards();                                  // clear existing display
         response.storage.forEach(list =>{
-            if(list["playlistName"] === playlistName){  // find the matching playlist
-                //createVideoCard(list)                   // create cards for every video
-                list.videos.forEach(video => createVideoCard(video))
+            if(list["playlistName"] === playlistName){  // find the matching playlist        
+                list.videos.forEach(video => createVideoCard(video))// create cards for every video
                 console.log("CREATED")
             }   
         }) 
@@ -119,7 +108,6 @@ function getSelectedTitleData(playlistName){
 
 function createTitlesList(data){
     console.log(`DATA PASSED TO createTitlesList: ${data}`)
-
     data.forEach(list => {
         let title = `<div class="list-title" id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)

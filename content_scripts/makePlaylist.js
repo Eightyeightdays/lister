@@ -42,17 +42,19 @@
 
 
 
-    let playlistString = "";
-    let baseUrl = "https://www.youtube.com/watch_videos?video_ids=";
-    // let playlistLink = document.getElementById("playlist-link");
 
-    function createPlaylistLink(){
-        let videoList = localStorage.getItem("playlistString");
+    let baseUrl = "https://www.youtube.com/watch_videos?video_ids=";
+
+    function createPlaylistLink(id){
+        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
+        let index = tempData.findIndex(list => list.playlistName === id);
+        let tempList = tempData[index] ;
+        let videoList = tempList.playlistString;
         let fullUrl = baseUrl + videoList;
-        console.log(fullUrl)
-        // playlistLink.href = fullUrl;
         navigator.clipboard.writeText(fullUrl);
-        alert("Playlist generated and copied to clipboard")
+        // alert("Playlist generated and copied to clipboard")
+        console.log("Playlist generated and copied to clipboard")
+        return fullUrl;
     }
     
     function setPlaylistName(name){
@@ -76,6 +78,11 @@
 
     function updateCurrentList(data, id){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
+        let index = tempData.findIndex(list => list.playlistName === id)
+        console.log("INDEX: " + index)
+        let tempList = tempData[index] //   find playlist with selected id
+        ////// could be made into its own function for re-use in createPlaylistLink
+
         console.log(data)
 
         let currentUrl = window.location.href;
@@ -83,10 +90,6 @@
         let end = start + 12;
         let currentId = currentUrl.substring(start, end) + ",";
 
-        let index = tempData.findIndex(list => list.playlistName === id)
-        console.log("INDEX: " + index)
-        let tempList = tempData[index] //   find playlist with selected id
-    
         console.log(tempList)
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
@@ -137,7 +140,8 @@
             })
             .catch(error => console.log(error))
         }else if(message.command === "create link"){
-            createPlaylistLink();
+            var url = createPlaylistLink(message.id)
+            return Promise.resolve({url: url})
         }else if(message.command === "return localStorage"){
             if(localStorage.getItem("allPlaylists")){
                 return Promise.resolve({message: "Storage retrieved", storage: JSON.parse(localStorage.getItem("allPlaylists"))})
