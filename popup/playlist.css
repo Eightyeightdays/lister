@@ -8,7 +8,7 @@
     display: flex;
     place-items: center;
     width: 700px;
-    height: 400px;
+    height: 250px;
     /* padding: 1em; */
     font-size: 15px;
     gap: 1em;
@@ -80,4 +80,18 @@ button{
 .list-title:hover{
     cursor: pointer;
     background: black;
+}
+
+#current-playlist-container{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    background: gold;
+}
+
+#current-playlist-container, #playlist-name-container{
+    padding: 1em;
+    
 }
