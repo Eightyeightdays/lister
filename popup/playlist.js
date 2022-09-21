@@ -16,8 +16,10 @@ function listenForClicks() {
 
         function addVideo(tabs) {
             console.log("ADD VIDEO CLICKED")
+            let id = document.getElementById("current-playlist").textContent
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "add video",
+                id: id
             })
             .then(response => {
                 console.log(response)
@@ -48,9 +50,17 @@ function listenForClicks() {
         }else if(e.target.classList.contains("list-title")){
             selectPlaylistTitle(e.target.id)
             document.getElementById("current-playlist").textContent = e.target.id;
+        }else if(e.target.id === "clear-storage"){
+            clearLocalStorage()
         }
 
     })
+}
+
+function clearLocalStorage(){
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "clear localStorage"})) 
+    .then(response => console.log(response.message)) 
 }
 
 function createVideoCard(info){

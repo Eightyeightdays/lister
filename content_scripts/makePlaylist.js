@@ -74,20 +74,24 @@
         }
     }
 
-    function updateCurrentList(data){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists"));
-        
+    function updateCurrentList(data, id){
+        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
+        console.log(data)
+
         let currentUrl = window.location.href;
         let start = currentUrl.search(/=/) + 1;
         let end = start + 12;
         let currentId = currentUrl.substring(start, end) + ",";
 
-        // get currently selected list
-        // get playListString of current list
-        playlistString += currentId;    // need to get old string from storage and add to it
+        let index = tempData.findIndex(list => list.playlistName === id)
+        console.log("INDEX: " + index)
+        let tempList = tempData[index] //   find playlist with selected id
         
-        
-        
+        console.log(tempList)
+
+        let tempString = tempList.playlistString;   // take old playlist string
+        tempString += currentId;                    // add new video to temp string
+        tempList.playlistString = tempString;       // add temp string to temp list
 
         let newVideo = {
             id: currentId,
@@ -96,7 +100,15 @@
             imgUrl: data.imgUrl
         }
 
-        localStorage.setItem("allPlaylists", playlistString);
+        tempList.videos.push(newVideo)  // add video to temp list
+        
+        console.log(tempList)   // log updated object
+
+        Object.assign(tempData[index], tempList)    // update the object in the tempData array
+
+        localStorage.setItem("allPlaylists", JSON.stringify(tempData)); // update storage with tempData
+
+        return data;    // to be accessed by next function
     }
 
     async function getVideoDetails(){
@@ -124,10 +136,13 @@
             setPlaylistName(message.title)
         }else if(message.command === "add video") {
             return getVideoDetails()    // adding "return" here solved the problem
-            .then(updateCurrentList(details))
-            .then(details =>{
+            .then(details => {
+                updateCurrentList(details, message.id)
                 return Promise.resolve({message: "video details fetched", details: details})
             })
+            // .then(details =>{
+            //     return Promise.resolve({message: "video details fetched", details: details})
+            // })
             .catch(error => console.log(error))
         }else if(message.command === "create link"){
             createPlaylistLink();
@@ -137,6 +152,9 @@
             }else{
                 return Promise.reject({message: "Storage is empty"})
             } 
+        }else if(message.command === "clear localStorage"){
+            localStorage.removeItem("allPlaylists");
+            return Promise.resolve({message: "Storage cleared"})
         }else{
             return;
         }
