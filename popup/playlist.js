@@ -5,7 +5,7 @@ function listenForClicks() {
 
         function addName(tabs) {
             let title = document.getElementById("playlist-name-input").value;
-            let element = `<div class="list-title" id=${title}>${title}</div>`;
+            let element = `<div class="list-title" id=${title} datecreated=${Date.now()}>${title}</div>`;
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "add name",
                 title: title
@@ -58,6 +58,10 @@ function listenForClicks() {
             sortPlaylists("forwards");
         }else if(e.target.id === "arrange-list-titles-backwards"){
             sortPlaylists("backwards");
+        }else if(e.target.id === "arrange-list-titles-oldest"){
+            sortPlaylists("oldest");
+        }else if(e.target.id === "arrange-list-titles-newest"){
+            sortPlaylists("newest");
         }
 
     })
@@ -113,7 +117,8 @@ function getSelectedTitleData(playlistName){
 function createTitlesList(data){
     console.log(`DATA PASSED TO createTitlesList: ${data}`)
     data.forEach(list => {
-        let title = `<div class="list-title" id=${list.playlistName}>${list.playlistName}</div>`;
+        // console.log(list)
+        let title = `<div class="list-title" datecreated=${list.dateCreated} id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
 }
@@ -129,8 +134,12 @@ function sortPlaylists(order){
     let allTitles = document.querySelectorAll(".list-title");
     if(order === "forwards"){
         sortedArray = Array.from(allTitles).sort((a,b) => a.id.toUpperCase() > b.id.toUpperCase())
-    }else{
+    }else if(order === "backwards"){
         sortedArray = Array.from(allTitles).sort((a,b) => a.id.toUpperCase() < b.id.toUpperCase())
+    }else if(order === "newest"){
+        sortedArray = Array.from(allTitles).sort((a,b) => a.attributes.datecreated.value < b.attributes.datecreated.value)
+    }else if(order === "oldest"){
+        sortedArray = Array.from(allTitles).sort((a,b) => a.attributes.datecreated.value > b.attributes.datecreated.value)
     }
     sortedArray.forEach(element =>{
         document.getElementById("list-title-container").appendChild(element)
