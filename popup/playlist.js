@@ -54,6 +54,10 @@ function listenForClicks() {
             document.getElementById("current-playlist").textContent = e.target.id;
         }else if(e.target.id === "clear-storage"){
             clearLocalStorage()
+        }else if(e.target.id === "arrange-list-titles-forwards"){
+            sortPlaylists("forwards");
+        }else if(e.target.id === "arrange-list-titles-backwards"){
+            sortPlaylists("backwards");
         }
 
     })
@@ -118,6 +122,19 @@ function removeCards(){
     while(playlistPreview.firstChild){
         playlistPreview.removeChild(playlistPreview.firstChild);
     }
+}
+
+function sortPlaylists(order){
+    let sortedArray;
+    let allTitles = document.querySelectorAll(".list-title");
+    if(order === "forwards"){
+        sortedArray = Array.from(allTitles).sort((a,b) => a.id.toUpperCase() > b.id.toUpperCase())
+    }else{
+        sortedArray = Array.from(allTitles).sort((a,b) => a.id.toUpperCase() < b.id.toUpperCase())
+    }
+    sortedArray.forEach(element =>{
+        document.getElementById("list-title-container").appendChild(element)
+    })
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
