@@ -64,6 +64,14 @@ function listenForClicks() {
             sortPlaylists("oldest");
         }else if(e.target.id === "arrange-list-titles-newest"){
             sortPlaylists("newest");
+        }else if(e.target.classList.contains("delete-video")){
+            let id = e.target.id;
+            let playlistName = document.getElementById("current-playlist").textContent;
+            deleteVideo(id, playlistName)
+        }else if(e.target.id === "test"){
+            test()
+        }else{
+
         }
 
     })
@@ -71,6 +79,7 @@ function listenForClicks() {
 
 let playlistPreview = document.getElementById("playlist-preview");
 
+let globalStorage;
 
 function clearLocalStorage(){
     browser.tabs.query({active: true, currentWindow: true})
@@ -79,26 +88,17 @@ function clearLocalStorage(){
 }
 
 function createVideoCard(video){
-    console.log(video)   // {title, author, imgUrl, id}
+    // console.log(video)   // {title, author, imgUrl, id}
    
     let card = `
         <div class="video-card" id="playlist-video-${videoNumber}">
             <div class="playlist-video-title">${video.title}</div>
             <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
             <div class="playlist-video-author">Uploaded by: ${video.author}</div>
-            <div class="remove-video" videoId=${video.id}>DELETE VIDEO</div>
+            <div class="delete-video" id=${video.id}>DELETE VIDEO</div>
         </div>`;
         playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
         videoNumber++;  // increment id number
-}
-
-function getLocalStorage(){   // runs every time popup is opened    
-    browser.tabs.query({active: true, currentWindow: true})
-    .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) 
-    .then(response => {
-        createTitlesList(response.storage)
-        showRecentPlaylist(response.storage)   
-    }) 
 }
 
 function selectPlaylistTitle(id){
@@ -154,9 +154,7 @@ function sortPlaylists(order){
 
 function showRecentPlaylist(data){
     let max = Math.max(...data.map(list => list.dateEdited))
-    console.log(max)
     let index = data.findIndex(list => list.dateEdited === max)
-    console.log(data[index])
     let mostRecentlyEditedPlaylist = data[index];
     mostRecentlyEditedPlaylist.videos.forEach(video => createVideoCard(video))
     document.getElementById("current-playlist").textContent = mostRecentlyEditedPlaylist.playlistName;
@@ -169,14 +167,58 @@ function removePlaylistTitles(){
     }
 }
 
-function deleteVideo(){
-    // remove from localStorage
-
-    // remove card from UI
+function deleteVideo(id, name){
+    getLocalStorage()
+    .then(response =>{
+        // remove video
+        let allLists = [].concat(response.storage)  // need to make sure that copies are made by VALUE not REFERENCE
+        let listIndex = allLists.findIndex(list => list.playlistName === name)
+        let tempList = allLists[listIndex]
+        let videoIndex = tempList.videos.findIndex(video => video.id === id)
+        tempList.videos.splice(videoIndex, 1)
+        // update playlistString
+        let oldString = tempList.playlistString
+        let stringIndex = oldString.indexOf(id)
+        let start = oldString.substring(0, stringIndex)
+        let end = oldString.substring(stringIndex+12)
+        let newString = start + end
+        tempList.playlistString = newString;
+        // remove card from UI
+        let node = document.getElementById(id)
+        let parent = node.closest(".video-card")
+        parent.remove()
+        // update localStorage
+        browser.tabs.query({active: true, currentWindow: true})
+        .then(response => browser.tabs.sendMessage(response[0].id, 
+            {
+                command: "update localStorage",
+                data: JSON.stringify(allLists)
+            }
+        )) 
+        .then(response => console.log(response.message)) 
+    })
 }
 
+function getLocalStorage(){     
+    var something = browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) 
+    .then(response => response)
+    .catch(error => console.log(error))
+    return something;
+}
+
+function hydrateUi(){
+    getLocalStorage()
+    .then(response => {
+        createTitlesList(response.storage);
+        showRecentPlaylist(response.storage);
+    })
+    .catch(error => console.log(error))
+}
+ 
+
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
-    .then(getLocalStorage)
+    .then(hydrateUi)
     .then(listenForClicks)
     .catch();
 

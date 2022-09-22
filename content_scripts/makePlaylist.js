@@ -76,8 +76,9 @@
         }
     }
 
+    
+    
     let frog;
-
     function updateCurrentList(data, id){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
         let index = tempData.findIndex(list => list.playlistName === id)
@@ -110,7 +111,7 @@
         console.log(tempList)   // log updated object
         Object.assign(tempData[index], tempList)    // update the object in the tempData array
         localStorage.setItem("allPlaylists", JSON.stringify(tempData)); // update storage with tempData
-        //return data;    // to be accessed by next function
+        
         // need to return currentId in order to add it to video card
         return frog = currentId
     }
@@ -158,6 +159,9 @@
         }else if(message.command === "clear localStorage"){
             localStorage.removeItem("allPlaylists");
             return Promise.resolve({message: "Storage cleared"})
+        }else if(message.command === "update localStorage"){
+            localStorage.setItem("allPlaylists", message.data)
+            return Promise.resolve({message: "Storage updated"})
         }else{
             return;
         }

@@ -121,9 +121,10 @@ a:hover{
     color: white;
 }
 
-.remove-video{
+.delete-video{
     background: red;
+    padding: 0.5em;
 }
-.remove-video:hover{
+.delete-video:hover{
     cursor: pointer;
 }
