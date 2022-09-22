@@ -15,7 +15,6 @@ function listenForClicks() {
         }
 
         function addVideo(tabs) {
-            console.log("ADD VIDEO CLICKED")
             let id = document.getElementById("current-playlist").textContent
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "add video",
@@ -92,7 +91,10 @@ function createVideoCard(video){
 function getLocalStorage(){   // runs every time popup is opened    
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) 
-    .then(response => createTitlesList(response.storage)) 
+    .then(response => {
+        createTitlesList(response.storage)
+        showRecentPlaylist(response.storage)   
+    }) 
 }
 
 function selectPlaylistTitle(id){
@@ -115,9 +117,8 @@ function getSelectedTitleData(playlistName){
 }
 
 function createTitlesList(data){
-    console.log(`DATA PASSED TO createTitlesList: ${data}`)
+    // console.log(`DATA PASSED TO createTitlesList: ${data}`)
     data.forEach(list => {
-        // console.log(list)
         let title = `<div class="list-title" datecreated=${list.dateCreated} id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
@@ -144,6 +145,16 @@ function sortPlaylists(order){
     sortedArray.forEach(element =>{
         document.getElementById("list-title-container").appendChild(element)
     })
+}
+
+function showRecentPlaylist(data){
+    let max = Math.max(...data.map(list => list.dateEdited))
+    console.log(max)
+    let index = data.findIndex(list => list.dateEdited === max)
+    console.log(data[index])
+    let mostRecentlyEditedPlaylist = data[index];
+    mostRecentlyEditedPlaylist.videos.forEach(video => createVideoCard(video))
+    document.getElementById("current-playlist").textContent = mostRecentlyEditedPlaylist.playlistName;
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})

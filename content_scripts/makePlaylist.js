@@ -63,7 +63,7 @@
             videos: [],
             playlistString: "",
             dateCreated: Date.now(),
-            dateEdited: "",
+            dateEdited: Date.now(),
             lastAccessed: ""
             }
 
@@ -81,7 +81,7 @@
         let index = tempData.findIndex(list => list.playlistName === id)
         console.log("INDEX: " + index)
         let tempList = tempData[index] //   find playlist with selected id
-        ////// could be made into its own function for re-use in createPlaylistLink
+        ////// could be made into its own function for re-use in createPlaylistLink 
 
         console.log(data)
 
@@ -99,9 +99,11 @@
             id: currentId,
             title: data.title,
             author: data.author,
-            imgUrl: data.imgUrl
+            imgUrl: data.imgUrl,
+            dateAdded: Date.now()
         }
 
+        tempList.dateEdited = Date.now();
         tempList.videos.push(newVideo)  // add video to temp list
         console.log(tempList)   // log updated object
         Object.assign(tempData[index], tempList)    // update the object in the tempData array
