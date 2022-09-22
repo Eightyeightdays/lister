@@ -76,12 +76,14 @@
         }
     }
 
+    let frog;
+
     function updateCurrentList(data, id){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
         let index = tempData.findIndex(list => list.playlistName === id)
         console.log("INDEX: " + index)
         let tempList = tempData[index] //   find playlist with selected id
-        ////// could be made into its own function for re-use in createPlaylistLink 
+        ////// ^^^ could be made into its own function for re-use in createPlaylistLink 
 
         console.log(data)
 
@@ -108,7 +110,9 @@
         console.log(tempList)   // log updated object
         Object.assign(tempData[index], tempList)    // update the object in the tempData array
         localStorage.setItem("allPlaylists", JSON.stringify(tempData)); // update storage with tempData
-        return data;    // to be accessed by next function
+        //return data;    // to be accessed by next function
+        // need to return currentId in order to add it to video card
+        return frog = currentId
     }
 
     async function getVideoDetails(){
@@ -138,6 +142,7 @@
             return getVideoDetails()    // adding "return" here solved the problem
             .then(details => {
                 updateCurrentList(details, message.id)
+                details.id = frog // add videoId to details object
                 return Promise.resolve({message: "video details fetched", details: details})
             })
             .catch(error => console.log(error))

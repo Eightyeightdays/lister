@@ -79,13 +79,14 @@ function clearLocalStorage(){
 }
 
 function createVideoCard(video){
-    console.log(video)   // {title, author, imgUrl}
+    console.log(video)   // {title, author, imgUrl, id}
    
     let card = `
         <div class="video-card" id="playlist-video-${videoNumber}">
             <div class="playlist-video-title">${video.title}</div>
             <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
             <div class="playlist-video-author">Uploaded by: ${video.author}</div>
+            <div class="remove-video" videoId=${video.id}>DELETE VIDEO</div>
         </div>`;
         playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
         videoNumber++;  // increment id number
@@ -166,6 +167,12 @@ function removePlaylistTitles(){
     while(parent.firstChild){
         parent.removeChild(parent.firstChild)
     }
+}
+
+function deleteVideo(){
+    // remove from localStorage
+
+    // remove card from UI
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
