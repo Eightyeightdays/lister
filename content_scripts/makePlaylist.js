@@ -52,7 +52,7 @@
         let videoList = tempList.playlistString;
         let fullUrl = baseUrl + videoList;
         navigator.clipboard.writeText(fullUrl);
-        // alert("Playlist generated and copied to clipboard")
+        // alert("Playlist generated and copied to clipboard") 
         console.log("Playlist generated and copied to clipboard")
         return fullUrl;
     }
@@ -64,7 +64,7 @@
             playlistString: "",
             dateCreated: Date.now(),
             dateEdited: Date.now(),
-            lastAccessed: ""
+            lastAccessed: Date.now()
             }
 
         if(!localStorage.getItem("allPlaylists")){                              // if no playlist exists

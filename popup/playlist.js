@@ -53,6 +53,9 @@ function listenForClicks() {
             document.getElementById("current-playlist").textContent = e.target.id;
         }else if(e.target.id === "clear-storage"){
             clearLocalStorage()
+            removeCards()
+            removePlaylistTitles()
+            document.getElementById("current-playlist").textContent = "None created"
         }else if(e.target.id === "arrange-list-titles-forwards"){
             sortPlaylists("forwards");
         }else if(e.target.id === "arrange-list-titles-backwards"){
@@ -110,6 +113,7 @@ function getSelectedTitleData(playlistName){
         response.storage.forEach(list =>{
             if(list["playlistName"] === playlistName){  // find the matching playlist        
                 list.videos.forEach(video => createVideoCard(video))// create cards for every video
+                list.lastAccessed = Date.now(); // log date that the list was accessed
                 console.log("CREATED")
             }   
         }) 
@@ -157,7 +161,15 @@ function showRecentPlaylist(data){
     document.getElementById("current-playlist").textContent = mostRecentlyEditedPlaylist.playlistName;
 }
 
+function removePlaylistTitles(){
+    let parent = document.getElementById("list-title-container")
+    while(parent.firstChild){
+        parent.removeChild(parent.firstChild)
+    }
+}
+
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(getLocalStorage)
     .then(listenForClicks)
     .catch();
+
