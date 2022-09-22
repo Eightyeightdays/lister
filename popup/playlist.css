@@ -52,11 +52,18 @@
 
 button{
     background: gold;
-    padding: 1em;
-    font-size: 15px;
+    font-size: 12px;
+    padding: 0.5em;
     cursor: pointer;
     border: 0;
-    border-radius: 5px;
+    width: 100%;
+}
+
+button:hover{
+    cursor: pointer;
+    background: black;
+    color: white;
+
 }
 
 .playlist-video-author{
@@ -66,8 +73,6 @@ button{
 }
 
 #list-title-container{
-    background: tomato;
-    width: 200px;
     height: 100%;
 }
 
@@ -75,6 +80,7 @@ button{
     border: 0.5em;
     padding: 0.5em;
     color: white;
+    width: 100%;
 }
 
 .list-title:hover{
@@ -83,15 +89,34 @@ button{
 }
 
 #current-playlist-container{
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    background: gold;
+    padding: 0.5em;
+    background: green;
+    width: 100%;
 }
 
-#current-playlist-container, #playlist-name-container{
-    padding: 1em;
-    
+#playlist-name-title{
+    background: white;
+    text-align: center;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: tomato;
+    gap: 0.5em;
+}
+
+a{
+    text-align: center;
+    background: gold;
+    padding: 0.5em;
+    width: 100%;
+}
+
+a:hover{
+    cursor: pointer;
+    background: black;
+    color: white;
 }
