@@ -20,13 +20,25 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     if(info.linkUrl === "undefined"){
             return;
     }else if(info.menuItemId === "add"){
-        console.log(info.linkUrl);
+        if(info.linkUrl === undefined){
+            console.log(info.pageUrl)
+            setTimeout(()=>{
+                browser.tabs.sendMessage(tab.id, {command: "add url", url: info.pageUrl})
+                .then(response => console.log(response))
+                .catch(error => console.log(error))
+            }, 10)
+        }else{
+            console.log(info.linkUrl);
+            setTimeout(()=>{
+                browser.tabs.sendMessage(tab.id, {command: "add url", url: info.linkUrl})
+                .then(response => console.log(response))
+                .catch(error => console.log(error))
+            }, 10)
+        }
+            
+        
 
-        setTimeout(()=>{
-            browser.tabs.sendMessage(tab.id, {command: "add url", url: info.linkUrl})
-            .then(response => console.log(response))
-            .catch(error => console.log(error))
-        }, 10)
+        
     
     }
 })
