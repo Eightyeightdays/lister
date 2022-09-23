@@ -70,8 +70,9 @@ function listenForClicks() {
             deleteVideo(id, playlistName)
         }else if(e.target.id === "test"){
             test()
-        }else{
-
+        }else if(e.target.id === "delete-current-playlist"){
+            let playlistName = document.getElementById("current-playlist").textContent;
+            deletePlaylist(playlistName)
         }
 
     })
@@ -215,7 +216,14 @@ function hydrateUi(){
     })
     .catch(error => console.log(error))
 }
- 
+
+function deletePlaylist(name){
+    removeCards()   // clear playlist preview
+    document.getElementById(name).remove()  // remove list title
+    document.getElementById("current-playlist").textContent = "None Selected"   // remove current
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "delete playlist", name: name})) 
+}
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(hydrateUi)

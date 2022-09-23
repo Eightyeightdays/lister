@@ -76,8 +76,6 @@
         }
     }
 
-    
-    
     let frog;
     function updateCurrentList(data, id){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
@@ -132,6 +130,14 @@
         return videoDetails;
     }
    
+    function deletePlaylist(name){  // has the same name in both scripts
+        let storage = JSON.parse(localStorage.getItem("allPlaylists"))
+        let index = storage.findIndex(list => list.playlistName === name)
+        storage.splice(index, 1)
+        console.log(storage)
+        localStorage.setItem("allPlaylists", JSON.stringify(storage))
+    }
+
 // Message handler //
 
     function handleCommands(message){
@@ -162,8 +168,8 @@
         }else if(message.command === "update localStorage"){
             localStorage.setItem("allPlaylists", message.data)
             return Promise.resolve({message: "Storage updated"})
-        }else{
-            return;
+        }else if(message.command === "delete playlist"){
+            deletePlaylist(message.name)
         }
     }
 
