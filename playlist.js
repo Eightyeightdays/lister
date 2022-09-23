@@ -36,6 +36,8 @@ function listenForClicks() {
         }else if(e.target.id === "delete-current-playlist"){
             let playlistName = document.getElementById("current-playlist").textContent;
             deletePlaylist(playlistName)
+        }else if(e.target.id === "begin-playlist"){
+            beginPlaylist()
         }
     })
 }
@@ -49,10 +51,13 @@ function addName(tabs) {
     })
     .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
     .then(document.getElementById("playlist-name-input").value = "");   // clear input field
+    setCurrentPlaylist(title)
+    removeCards()
+    document.getElementById("current-playlist").textContent = title;
+    // update ui here
 }
 
 function addVideo(tabs) {
-    
     browser.tabs.sendMessage(tabs[0].id, {
         command: "add video",
         id: document.getElementById("current-playlist").textContent
@@ -65,20 +70,26 @@ function addVideo(tabs) {
     })
 }
 
-function createLink(tabs){
-    browser.tabs.sendMessage(tabs[0].id, {
+function createLink(){
+    let something = browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {
         command: "create link",
         id: document.getElementById("current-playlist").textContent
-    })
-    .then(response => {
-        console.log(response.url) // link to playlist
-        document.getElementById("playlist-link").href = response.url;
-    })
+    }))
+    .then(response => response)
+    .catch(error => console.log(error))
+    return something;
+}
+
+function beginPlaylist(){
+    createLink()
+    .then(response => window.open(response.url, '_blank'))
+    setTimeout(()=>{
+        window.close()
+    }, 100)
 }
 
 let playlistPreview = document.getElementById("playlist-preview");
-
-let globalStorage;
 
 function clearLocalStorage(){
     browser.tabs.query({active: true, currentWindow: true})
@@ -88,7 +99,6 @@ function clearLocalStorage(){
 
 function createVideoCard(video){
     // console.log(video)   // {title, author, imgUrl, id}
-   
     let card = `
         <div class="video-card" id="playlist-video-${videoNumber}">
             <div class="playlist-video-title">${video.title}</div>
@@ -102,14 +112,20 @@ function createVideoCard(video){
 
 function selectPlaylistTitle(id){
     let playlistName = document.getElementById(id).textContent;
-    getSelectedTitleData(playlistName)
+    showSelectedList(playlistName)
+    setCurrentPlaylist(playlistName)
+}
+
+function setCurrentPlaylist(playlistName){
+    document.getElementById("current-playlist").textContent = playlistName;
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "set current playlist", playlistName: playlistName})) 
     .then(response => console.log(response))
     .catch(error => console.log(error))
+
 }
 
-function getSelectedTitleData(playlistName){
+function showSelectedList(playlistName){
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) // get storage
     .then(response=>{
@@ -125,7 +141,7 @@ function getSelectedTitleData(playlistName){
 }
 
 function createTitlesList(data){
-    // console.log(`DATA PASSED TO createTitlesList: ${data}`)
+    console.log(`DATA PASSED TO createTitlesList: ${data}`)
     data.forEach(list => {
         let title = `<div class="list-title" datecreated=${list.dateCreated} id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
@@ -155,13 +171,14 @@ function sortPlaylists(order){
     })
 }
 
-function showRecentPlaylist(data){
-    let max = Math.max(...data.map(list => list.dateEdited))
-    let index = data.findIndex(list => list.dateEdited === max)
-    let recent = data[index];
-    recent.videos.forEach(video => createVideoCard(video))
-    document.getElementById("current-playlist").textContent = recent.playlistName;
-}
+// DISABLED FOR NOW
+// function showRecentPlaylist(data){
+//     let max = Math.max(...data.map(list => list.dateEdited))
+//     let index = data.findIndex(list => list.dateEdited === max)
+//     let recent = data[index];
+//     recent.videos.forEach(video => createVideoCard(video))
+//     document.getElementById("current-playlist").textContent = recent.playlistName;
+// }
 
 function removePlaylistTitles(){
     let parent = document.getElementById("list-title-container")
@@ -203,8 +220,16 @@ function deleteVideo(id, name){
 }
 
 function getLocalStorage(){     
-    var something = browser.tabs.query({active: true, currentWindow: true})
+    let something = browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "return localStorage"})) 
+    .then(response => response)
+    .catch(error => console.log(error))
+    return something;
+}
+
+function getCurrentPlaylist(){
+    let something = browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "return currentPlaylist"})) 
     .then(response => response)
     .catch(error => console.log(error))
     return something;
@@ -214,7 +239,11 @@ function hydrateUi(){
     getLocalStorage()
     .then(response => {
         createTitlesList(response.storage);
-        showRecentPlaylist(response.storage);
+    })
+    .then(getCurrentPlaylist)
+    .then(response => {
+        showSelectedList(response.current)
+        document.getElementById("current-playlist").textContent = response.current
     })
     .catch(error => console.log(error))
 }
@@ -227,6 +256,18 @@ function deletePlaylist(name){
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "delete playlist", name: name})) 
 }
  
+var input = document.getElementById("playlist-name-input");
+
+input.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("add-playlist-name").click();
+  }
+}); 
+
+
+
+
 console.log("popup")
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})

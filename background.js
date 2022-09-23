@@ -19,22 +19,23 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     .catch(error => console.log(error))
 
     if(info.menuItemId === "add"){
-        if(info.linkUrl === undefined && info.pageUrl.includes("youtube")){
+        console.log(info)
+        if(info.linkUrl === undefined){
             setTimeout(()=>{
                 browser.tabs.sendMessage(tab.id, {command: "add url", url: info.pageUrl})
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
             }, 100)
-        }else if(info.pageUrl === undefined && info.linkUrl.includes("youtube")){
+        }else{
             setTimeout(()=>{
                 browser.tabs.sendMessage(tab.id, {command: "add url", url: info.linkUrl})
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
             }, 10)
-        }else{
-            console.log("Not a valid link")
-            return;
         }
+        // console.log("Not a valid link")
+        return;
+        
     }
 })
  

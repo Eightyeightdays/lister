@@ -183,6 +183,9 @@
             .catch(error => console.log(error))
         }else if(message.command === "set current playlist"){
             localStorage.setItem("currentPlaylist", message.playlistName)
+        }else if(message.command === "return currentPlaylist"){
+            let current = localStorage.getItem("currentPlaylist")
+            return Promise.resolve({message: "current playlist retrieved", current: current})
         }
     }
 
