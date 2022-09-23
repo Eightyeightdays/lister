@@ -83,10 +83,17 @@
         let tempList = tempData[index] //   find playlist with selected id
         ////// ^^^ could be made into its own function for re-use in createPlaylistLink 
         
-        let start = url.search(/=/) + 1;
+        let start;
+        if(url.search(/=/) === -1){
+            start = url.search(/shorts\//) + 7; // url for YouTube Shorts is different
+        }else{
+            start = url.search(/=/) + 1;
+        }
+         
         let end = start + 12;
         let currentId = url.substring(start, end) + ",";
-
+       
+        //////////
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
         tempList.playlistString = tempString;       // add temp string to temp list
