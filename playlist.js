@@ -2,43 +2,6 @@ var videoNumber = 1;
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-
-        function addName(tabs) {
-            let title = document.getElementById("playlist-name-input").value;
-            let element = `<div class="list-title" id=${title} datecreated=${Date.now()}>${title}</div>`;
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "add name",
-                title: title
-            })
-            .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
-            .then(document.getElementById("playlist-name-input").value = "");   // clear input field
-        }
-
-        function addVideo(tabs) {
-            
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "add video",
-                id: document.getElementById("current-playlist").textContent
-            })
-            .then(response => {
-                console.log(response)
-                if(response.message === "video details fetched"){
-                    createVideoCard(response.details)
-                }
-            })
-        }
-
-        function createLink(tabs){
-            browser.tabs.sendMessage(tabs[0].id, {
-                command: "create link",
-                id: document.getElementById("current-playlist").textContent
-            })
-            .then(response => {
-                console.log(response.url) // link to playlist
-                document.getElementById("playlist-link").href = response.url;
-            })
-        }
-    
         if(e.target.id === "add-playlist-name"){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addName)
@@ -74,7 +37,42 @@ function listenForClicks() {
             let playlistName = document.getElementById("current-playlist").textContent;
             deletePlaylist(playlistName)
         }
+    })
+}
 
+function addName(tabs) {
+    let title = document.getElementById("playlist-name-input").value;
+    let element = `<div class="list-title" id=${title} datecreated=${Date.now()}>${title}</div>`;
+    browser.tabs.sendMessage(tabs[0].id, {
+        command: "add name",
+        title: title
+    })
+    .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
+    .then(document.getElementById("playlist-name-input").value = "");   // clear input field
+}
+
+function addVideo(tabs) {
+    
+    browser.tabs.sendMessage(tabs[0].id, {
+        command: "add video",
+        id: document.getElementById("current-playlist").textContent
+    })
+    .then(response => {
+        console.log(response)
+        if(response.message === "video details fetched"){
+            createVideoCard(response.details)
+        }
+    })
+}
+
+function createLink(tabs){
+    browser.tabs.sendMessage(tabs[0].id, {
+        command: "create link",
+        id: document.getElementById("current-playlist").textContent
+    })
+    .then(response => {
+        console.log(response.url) // link to playlist
+        document.getElementById("playlist-link").href = response.url;
     })
 }
 
