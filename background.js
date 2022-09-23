@@ -9,7 +9,8 @@ function onCreated() {
 browser.contextMenus.create({
     id: "add",
     title: "Add To Playlist",
-    contexts: ["all"]
+    contexts: ["all"],
+    documentUrlPatterns: ["*://www.youtube.com/*"]
 }, onCreated);
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
