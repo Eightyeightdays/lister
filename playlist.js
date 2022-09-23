@@ -15,10 +15,10 @@ function listenForClicks() {
         }
 
         function addVideo(tabs) {
-            let id = document.getElementById("current-playlist").textContent
+            
             browser.tabs.sendMessage(tabs[0].id, {
                 command: "add video",
-                id: id
+                id: document.getElementById("current-playlist").textContent
             })
             .then(response => {
                 console.log(response)
@@ -105,6 +105,10 @@ function createVideoCard(video){
 function selectPlaylistTitle(id){
     let playlistName = document.getElementById(id).textContent;
     getSelectedTitleData(playlistName)
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "set current playlist", playlistName: playlistName})) 
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
 }
 
 function getSelectedTitleData(playlistName){
@@ -156,9 +160,9 @@ function sortPlaylists(order){
 function showRecentPlaylist(data){
     let max = Math.max(...data.map(list => list.dateEdited))
     let index = data.findIndex(list => list.dateEdited === max)
-    let mostRecentlyEditedPlaylist = data[index];
-    mostRecentlyEditedPlaylist.videos.forEach(video => createVideoCard(video))
-    document.getElementById("current-playlist").textContent = mostRecentlyEditedPlaylist.playlistName;
+    let recent = data[index];
+    recent.videos.forEach(video => createVideoCard(video))
+    document.getElementById("current-playlist").textContent = recent.playlistName;
 }
 
 function removePlaylistTitles(){
@@ -224,6 +228,8 @@ function deletePlaylist(name){
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "delete playlist", name: name})) 
 }
+ 
+console.log("popup")
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(hydrateUi)

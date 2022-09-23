@@ -17,18 +17,23 @@
             "*://www.youtube.com/embed/*",
             "*://www.youtube.com/pop-up-player/*"
           ],
-        "js": ["playlist.js"]
+        "js": ["makePlaylist.js"]
       }
     ],
 
-    "permissions": ["contextMenus", "activeTab", "clipboardWrite"],
+    "permissions": ["contextMenus", "tabs", "activeTab", "clipboardWrite"],
 
     "browser_action": {
       "default_icon": "icons/beasts-32.png",
       "default_title": "YouTube Playlist Maker",
       "default_popup": "popup/playlist.html"
-    }
+    },
 
+    "background": {
+      "scripts": [
+          "background.js"
+      ]
+    }
   
   }
   

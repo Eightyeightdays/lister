@@ -77,21 +77,16 @@
     }
 
     let frog;
-    function updateCurrentList(data, id){
+    function updateCurrentList(data, url, id){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
         let index = tempData.findIndex(list => list.playlistName === id)
-        console.log("INDEX: " + index)
         let tempList = tempData[index] //   find playlist with selected id
         ////// ^^^ could be made into its own function for re-use in createPlaylistLink 
-
-        console.log(data)
-
-        let currentUrl = window.location.href;
-        let start = currentUrl.search(/=/) + 1;
+        
+        let start = url.search(/=/) + 1;
         let end = start + 12;
-        let currentId = currentUrl.substring(start, end) + ",";
+        let currentId = url.substring(start, end) + ",";
 
-        console.log(tempList)
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
         tempList.playlistString = tempString;       // add temp string to temp list
@@ -114,9 +109,9 @@
         return frog = currentId
     }
 
-    async function getVideoDetails(){
+    async function getVideoDetails(url){
         let startUrl = "https://www.youtube.com/oembed?url=";
-        let midUrl = window.location.href;
+        let midUrl = url;
         let endUrl = "&format=json";
         let jsonUrl = startUrl + midUrl + endUrl;
         let videoDetails = {}
@@ -141,14 +136,14 @@
 // Message handler //
 
     function handleCommands(message){
-        console.log(message.command)
-
         if(message.command === "add name"){
             setPlaylistName(message.title)
         }else if(message.command === "add video") {
-            return getVideoDetails()    // adding "return" here solved the problem
+            let url = window.location.href;
+            console.log(message.id)
+            return getVideoDetails(url)    // adding "return" here solved the problem
             .then(details => {
-                updateCurrentList(details, message.id)
+                updateCurrentList(details, url, message.id)
                 details.id = frog // add videoId to details object
                 return Promise.resolve({message: "video details fetched", details: details})
             })
@@ -170,9 +165,25 @@
             return Promise.resolve({message: "Storage updated"})
         }else if(message.command === "delete playlist"){
             deletePlaylist(message.name)
+        }else if(message.command === "add url"){
+            return getVideoDetails(message.url)    // adding "return" here solved the problem
+            .then(details => {
+                let id = localStorage.getItem("currentPlaylist")
+                updateCurrentList(details, message.url, id)
+                details.id = frog // add videoId to details object
+                return Promise.resolve({message: "video details fetched", details: details})
+            })
+            .catch(error => console.log(error))
+        }else if(message.command === "set current playlist"){
+            localStorage.setItem("currentPlaylist", message.playlistName)
         }
     }
 
     browser.runtime.onMessage.addListener(handleCommands);
+    
+    
+   
+    let testHere = "POOP"
+    console.log(testHere)
 
 })()
