@@ -1,7 +1,13 @@
 var videoNumber = 1;
+const playlistOrderNode = document.getElementById("playlistOrder");
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
+        if(document.getElementById("current-playlist").textContent === "None Created" && e.target.id !== "add-playlist-name" && e.target.id !== "playlist-name-input"){
+            promptUser()
+            return;
+        }
+
         if(e.target.id === "add-playlist-name"){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addName)
@@ -21,14 +27,19 @@ function listenForClicks() {
             document.getElementById("current-playlist").textContent = "None created"
         }else if(e.target.id === "arrange-list-titles-forwards"){
             sortPlaylists("forwards");
+            playlistOrderNode.textContent = "forwards"
         }else if(e.target.id === "arrange-list-titles-backwards"){
             sortPlaylists("backwards");
+            playlistOrderNode.textContent = "backwards"
         }else if(e.target.id === "arrange-list-titles-oldest"){
             sortPlaylists("oldest");
+            playlistOrderNode.textContent = "oldest"
         }else if(e.target.id === "arrange-list-titles-newest"){
             sortPlaylists("newest");
+            playlistOrderNode.textContent = "newest"
         }else if(e.target.id === "arrange-list-titles-edited"){
             sortPlaylists("edited");
+            playlistOrderNode.textContent = "edited"
         }else if(e.target.classList.contains("delete-video")){
             let id = e.target.id;
             let playlistName = document.getElementById("current-playlist").textContent;
@@ -46,7 +57,10 @@ function listenForClicks() {
 
 function addName(tabs) {
     let title = document.getElementById("playlist-name-input").value;
-
+    if(title === ""){
+        alert("Playlist must have a name")
+        return;
+    }
     if(checkPlaylistName(title)){
         console.log("EXIT")
         return
@@ -62,7 +76,11 @@ function addName(tabs) {
     setCurrentPlaylist(title)
     removeCards()
     document.getElementById("current-playlist").textContent = title;
-    // update ui here
+    
+    if(playlistOrderNode.textContent = "default"){
+        sortPlaylists("forwards")
+    }
+
 }
 
 function addVideo(tabs) {
@@ -130,7 +148,6 @@ function setCurrentPlaylist(playlistName){
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "set current playlist", playlistName: playlistName})) 
     .then(response => console.log(response))
     .catch(error => console.log(error))
-
 }
 
 function showSelectedList(playlistName){
@@ -149,11 +166,16 @@ function showSelectedList(playlistName){
 }
 
 function createTitlesList(data, order){
-    console.log(`DATA PASSED TO createTitlesList: ${data}`)
+    console.log(data)
+    console.log(order)
     data.forEach(list => {
         let title = `<div class="list-title" datecreated=${list.dateCreated} dateedited=${list.dateEdited} id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
+    if(order === null){
+        console.log("Order was NULL, set to newest")
+        order = "newest"
+    }
     sortPlaylists(order)
 }
 
@@ -251,6 +273,7 @@ function hydrateUi(){
     getLocalStorage()
     .then(response => {
         createTitlesList(response.storage, response.order);
+        playlistOrderNode.textContent = response.order;
     })
     .then(getCurrentPlaylist)
     .then(response => {
@@ -295,6 +318,14 @@ function setSortState(order){
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "set sorting order", order: order})) 
     .then(response => console.log(response))
     .catch(error => console.log(error))
+}
+
+function promptUser(){
+    alert("create or select a playlist to begin")   // IMPROVE LATER
+}
+
+function favouritePlaylist(){
+
 }
 
 console.log("popup")
