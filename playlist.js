@@ -148,12 +148,13 @@ function showSelectedList(playlistName){
     })
 }
 
-function createTitlesList(data){
+function createTitlesList(data, order){
     console.log(`DATA PASSED TO createTitlesList: ${data}`)
     data.forEach(list => {
         let title = `<div class="list-title" datecreated=${list.dateCreated} dateedited=${list.dateEdited} id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
+    sortPlaylists(order)
 }
 
 function removeCards(){
@@ -179,6 +180,7 @@ function sortPlaylists(order){
     sortedArray.forEach(element =>{
         document.getElementById("list-title-container").appendChild(element)
     })
+    setSortState(order);
 }
 
 // DISABLED FOR NOW
@@ -248,7 +250,7 @@ function getCurrentPlaylist(){
 function hydrateUi(){
     getLocalStorage()
     .then(response => {
-        createTitlesList(response.storage);
+        createTitlesList(response.storage, response.order);
     })
     .then(getCurrentPlaylist)
     .then(response => {
@@ -288,6 +290,12 @@ function checkPlaylistName(name){
    }
 }
 
+function setSortState(order){
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(response => browser.tabs.sendMessage(response[0].id, {command: "set sorting order", order: order})) 
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
 
 console.log("popup")
 

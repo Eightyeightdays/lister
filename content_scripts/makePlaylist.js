@@ -64,7 +64,9 @@
             playlistString: "",
             dateCreated: Date.now(),
             dateEdited: Date.now(),
-            lastAccessed: Date.now()
+            lastAccessed: Date.now(),
+            viewCount: 0,
+            favourite: false
             }
 
         if(!localStorage.getItem("allPlaylists")){                              // if no playlist exists
@@ -160,12 +162,14 @@
             return Promise.resolve({url: url})
         }else if(message.command === "return localStorage"){
             if(localStorage.getItem("allPlaylists")){
-                return Promise.resolve({message: "Storage retrieved", storage: JSON.parse(localStorage.getItem("allPlaylists"))})
+                return Promise.resolve({message: "Storage retrieved", storage: JSON.parse(localStorage.getItem("allPlaylists")), order: localStorage.getItem("playlistOrder")})
             }else{
                 return Promise.reject({message: "Storage is empty"})
             } 
         }else if(message.command === "clear localStorage"){
             localStorage.removeItem("allPlaylists");
+            localStorage.removeItem("playlistOrder");
+            localStorage.removeItem("currentPlaylist");
             return Promise.resolve({message: "Storage cleared"})
         }else if(message.command === "update localStorage"){
             localStorage.setItem("allPlaylists", message.data)
@@ -186,6 +190,9 @@
         }else if(message.command === "return currentPlaylist"){
             let current = localStorage.getItem("currentPlaylist")
             return Promise.resolve({message: "current playlist retrieved", current: current})
+        }else if(message.command === "set sorting order"){
+            localStorage.setItem("playlistOrder", message.order)
+            return Promise.resolve({message: `playlist order set to ${message.order}`})
         }
     }
 
