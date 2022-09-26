@@ -27,6 +27,8 @@ function listenForClicks() {
             sortPlaylists("oldest");
         }else if(e.target.id === "arrange-list-titles-newest"){
             sortPlaylists("newest");
+        }else if(e.target.id === "arrange-list-titles-edited"){
+            sortPlaylists("edited");
         }else if(e.target.classList.contains("delete-video")){
             let id = e.target.id;
             let playlistName = document.getElementById("current-playlist").textContent;
@@ -44,6 +46,12 @@ function listenForClicks() {
 
 function addName(tabs) {
     let title = document.getElementById("playlist-name-input").value;
+
+    if(checkPlaylistName(title)){
+        console.log("EXIT")
+        return
+    }
+
     let element = `<div class="list-title" id=${title} datecreated=${Date.now()}>${title}</div>`;
     browser.tabs.sendMessage(tabs[0].id, {
         command: "add name",
@@ -143,7 +151,7 @@ function showSelectedList(playlistName){
 function createTitlesList(data){
     console.log(`DATA PASSED TO createTitlesList: ${data}`)
     data.forEach(list => {
-        let title = `<div class="list-title" datecreated=${list.dateCreated} id=${list.playlistName}>${list.playlistName}</div>`;
+        let title = `<div class="list-title" datecreated=${list.dateCreated} dateedited=${list.dateEdited} id=${list.playlistName}>${list.playlistName}</div>`;
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
 }
@@ -165,6 +173,8 @@ function sortPlaylists(order){
         sortedArray = Array.from(allTitles).sort((a,b) => a.attributes.datecreated.value < b.attributes.datecreated.value)
     }else if(order === "oldest"){
         sortedArray = Array.from(allTitles).sort((a,b) => a.attributes.datecreated.value > b.attributes.datecreated.value)
+    }else if(order === "edited"){
+        sortedArray = Array.from(allTitles).sort((a,b) => a.attributes.dateedited.value < b.attributes.dateedited.value)
     }
     sortedArray.forEach(element =>{
         document.getElementById("list-title-container").appendChild(element)
@@ -265,7 +275,18 @@ input.addEventListener("keypress", function(event) {
   }
 }); 
 
-
+function checkPlaylistName(name){
+    let allNames = []
+    document.querySelectorAll(".list-title").forEach(list => allNames.push(list.textContent.toUpperCase()))
+    
+    if(allNames.includes(name.toUpperCase())){
+        alert.log("A playlist with that name already exists") // create UI notification
+        return true;
+    }else{
+        console.log("Playlist name is unique")
+        return false;
+   }
+}
 
 
 console.log("popup")
