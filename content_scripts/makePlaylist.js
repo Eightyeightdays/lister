@@ -71,6 +71,7 @@
 
         if(!localStorage.getItem("allPlaylists")){                              // if no playlist exists
             localStorage.setItem("allPlaylists", JSON.stringify([newList]));    // initialise localStorage with allPlaylists
+            localStorage.setItem("playlistOrder", "newest")                   // set default list order
         }else{
             let tempStorage = JSON.parse(localStorage.getItem("allPlaylists")); // otherwise get existing storage
             tempStorage.push(newList);                                          // add new list
@@ -178,7 +179,9 @@
             if(localStorage.getItem("allPlaylists")){
                 return Promise.resolve({message: "Storage retrieved", storage: JSON.parse(localStorage.getItem("allPlaylists")), order: localStorage.getItem("playlistOrder")})
             }else{
-                return Promise.reject({message: "Storage is empty"})
+                localStorage.setItem("playlistOrder", "newest");
+                localStorage.setItem("currentPlaylist", "None Created")
+                return Promise.resolve({message: "Storage is empty, order set to newest, currentPlaylist set to None", order: localStorage.getItem("playlistOrder")})
             } 
         }else if(message.command === "clear localStorage"){
             localStorage.removeItem("allPlaylists");
