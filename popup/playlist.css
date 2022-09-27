@@ -8,7 +8,7 @@
     display: flex;
     place-items: center;
     width: 700px;
-    height: 300px;
+    height: 600px;
     /* padding: 1em; */
     font-size: 15px;
     gap: 1em;
@@ -20,7 +20,7 @@
     flex-direction: column;
     background: red;
     height: 100%;
-   width: 300px;
+    width: 300px;
 }
 
 .playlist-header{
@@ -30,8 +30,9 @@
 #playlist-preview{
     background: gainsboro;
     height: 100%;
-     width: 100%;
+    width: 100%;
     display: flex;
+    flex-direction: column;
     gap: 1em;
     padding: 0.5em;
     overflow-x: scroll;
@@ -40,9 +41,13 @@
 .video-card{
     background: white; 
     border-radius: 10px; 
-    width: 120px;
-    height: 100%;
+    width: 200px;
+    /* height: 100%; */
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .playlist-preview-image{
@@ -66,8 +71,12 @@ button:hover{
 
 }
 
+.playlist-video-title, .playlist-video-author{
+    padding: 0.5em;
+}
+
 .playlist-video-author{
-    white-space: nowrap;
+    /* white-space: nowrap; */
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -146,4 +155,12 @@ a:hover{
 .star{
     height: 1em;
     fill: gold;
+}
+
+.draggable{
+    cursor: pointer;
+}
+
+.drag-start{
+    display: none;
 }

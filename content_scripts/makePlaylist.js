@@ -218,10 +218,5 @@
     }
 
     browser.runtime.onMessage.addListener(handleCommands);
-    
-    
-   
-    let testHere = "POOP"
-    console.log(testHere)
 
 })()

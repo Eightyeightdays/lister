@@ -2,7 +2,7 @@ function onCreated() {
     if (browser.runtime.lastError) {
         console.log(`Error: ${browser.runtime.lastError}`);
     } else {
-        console.log("Context menu item created successfully");
+        // console.log("Context menu item created successfully");
     }
 }
 
@@ -31,7 +31,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
                 browser.tabs.sendMessage(tab.id, {command: "add url", url: info.linkUrl})
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
-            }, 10)
+            }, 100)
         }
         // console.log("Not a valid link")
         return;
@@ -39,7 +39,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     }
 })
  
-console.log("background")
+// console.log("background")
 
 
 

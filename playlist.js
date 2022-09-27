@@ -1,4 +1,4 @@
-var videoNumber = 1;
+// var videoNumber = 1;
 const playlistOrderNode = document.getElementById("playlistOrder");
 const star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="star"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>`
 
@@ -57,6 +57,8 @@ function listenForClicks() {
             beginPlaylist()
         }else if(e.target.id === "add-favourite"){
             setPlaylistFavourite()
+        }else if(e.target.id === "enableDrag"){
+            enableDrag();
         }
     })
 }
@@ -138,6 +140,15 @@ function clearLocalStorage(){
 
 function createVideoCard(video){
     // console.log(video)   // {title, author, imgUrl, id}
+    let videoNumber
+    let totalCards = document.querySelectorAll(".video-card").length
+    if(totalCards === 0){
+        videoNumber = 1;
+    }else{
+        videoNumber = totalCards+1
+    }
+    
+
     let card = `
         <div class="video-card" id="playlist-video-${videoNumber}">
             <div class="playlist-video-title">${video.title}</div>
@@ -220,8 +231,8 @@ function sortPlaylists(order){
     let allRest = document.querySelectorAll(".list-title-card[favourite='false']")
     let allTitles = [];
 
-    console.log(allFavourites)
-    console.log(allRest)
+    // console.log(allFavourites)
+    // console.log(allRest)
 
     if(order === "forwards"){
         sortedFavourites = Array.from(allFavourites).sort((a,b) => a.id.toUpperCase() > b.id.toUpperCase())
@@ -360,7 +371,7 @@ function checkPlaylistName(name){
 function setSortState(order){
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "set sorting order", order: order})) 
-    .then(response => console.log(response))
+    // .then(response => console.log(response))
     .catch(error => console.log(error))
 }
 
@@ -395,8 +406,75 @@ function updateTitleOnEdit(){
     title.setAttribute("dateedited", Date.now())
 }
 
+function enableDrag(){
+    let allCards = document.querySelectorAll(".video-card")
+    allCards.forEach(card => {
+        card.setAttribute("draggable", true)
+        card.classList.add("draggable")   
+        card.addEventListener('dragenter', dragEnter)
+        card.addEventListener('dragover', dragOver);
+        card.addEventListener('dragleave', dragLeave);
+        card.addEventListener('drop', drop);
+        card.addEventListener("dragstart", dragStart)
+    })
+    // document.getElementById("playlist-video-1").addEventListener("dragstart", dragStart)
+}
 
-console.log("popup")
+
+
+function dragStart(event){
+    // give all cards temporary ids according to their index whenever drag begins
+    let cardList = document.querySelectorAll(".video-card")
+    let count = 1;
+    cardList.forEach(card => {
+        card.setAttribute("data-id", count)
+        count++
+    })
+    /////////////////
+    if(event.target.classList.contains("video-card")){
+        event.dataTransfer.setData("text/plain", event.target.dataset.id);
+    }else{
+        return;
+    }
+    
+    event.dataTransfer.dropEffect = "move";
+    // event.currentTarget.style.border = "5px solid gold"
+    setTimeout(()=>{
+        event.target.classList.add("drag-start")
+    },0)
+
+    
+}
+
+function dragEnter(event){
+    event.preventDefault()   
+}
+
+function dragOver(event){
+    event.preventDefault()
+}
+
+function dragLeave(){
+
+}
+
+function drop(event){
+    event.preventDefault()
+
+    let dropId = event.target.dataset.id
+    let container = document.getElementById("playlist-preview")
+    
+    let dragId = event.dataTransfer.getData("text/plain") // id of dragged item
+    let card = document.querySelector('[data-id="' +dragId+ '"]')
+   
+    if(event.target.classList.contains("video-card")){
+        card.classList.remove("drag-start")
+        container.insertBefore(card, container.children[dropId])
+    }else{
+        return
+    }
+    
+}
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(hydrateUi)
