@@ -142,6 +142,20 @@
         localStorage.setItem("allPlaylists", JSON.stringify(storage))
     }
 
+    function setPlaylistFavourite(name){
+        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
+        let index = tempData.findIndex(list => list.playlistName === name);
+        let tempList = tempData[index] ;
+        // could be made a separate function
+
+        if(tempList.favourite === false){
+            tempList.favourite = true
+        }else{
+            tempList.favourite = false
+        }
+        localStorage.setItem("allPlaylists", JSON.stringify(tempData))
+        console.log(`${name} favourite status set to ${tempList.favourite}`)
+    }
 // Message handler //
 
     function handleCommands(message){
@@ -194,6 +208,9 @@
         }else if(message.command === "set sorting order"){
             localStorage.setItem("playlistOrder", message.order)
             return Promise.resolve({message: `playlist order set to ${message.order}`})
+        }else if(message.command === "favourite"){
+            setPlaylistFavourite(message.list)
+            return Promise.resolve({message: `favourite status set for ${message.list}`})
         }
     }
 

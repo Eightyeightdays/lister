@@ -77,15 +77,23 @@ button:hover{
 }
 
 .list-title{
+    background: rgb(124, 161, 230);
     border: 0.5em;
     padding: 0.5em;
     color: white;
     width: 100%;
+    height: 100%;
+    /* position: relative;
+    z-index: 1; */
 }
 
-.list-title:hover{
+.list-title-card:hover{
     cursor: pointer;
     background: black;
+}
+
+.list-title-card{
+    /* background: red; */
 }
 
 #current-playlist-container{
@@ -133,4 +141,9 @@ a:hover{
 }
 .delete-video:hover{
     cursor: pointer;
+}
+
+.star{
+    height: 1em;
+    fill: gold;
 }
