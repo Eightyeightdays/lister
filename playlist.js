@@ -45,7 +45,7 @@ function listenForClicks() {
             sortPlaylists("edited");
             playlistOrderNode.textContent = "edited"
         }else if(e.target.classList.contains("delete-video")){
-            let id = e.target.id;
+            let id = e.target.dataset.id
             let playlistName = document.getElementById("current-playlist").textContent;
             deleteVideo(id, playlistName)
         }else if(e.target.id === "test"){
@@ -61,7 +61,16 @@ function listenForClicks() {
             enableDrag();
         }
     })
+
+    document.addEventListener("mousedown", (e)=>{
+        if(e.target.classList.contains("handle")){
+            let parent = e.target.closest(".video-card")
+            enableDrag(parent.id);
+            console.log("MOUSE DOWN")
+        }
+    })
 }
+
 
 function addName(tabs) {
     let title = document.getElementById("playlist-name-input").value;
@@ -147,14 +156,18 @@ function createVideoCard(video){
     }else{
         videoNumber = totalCards+1
     }
-    
 
     let card = `
         <div class="video-card" id="playlist-video-${videoNumber}">
-            <div class="playlist-video-title">${video.title}</div>
-            <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
-            <div class="playlist-video-author">Uploaded by: ${video.author}</div>
-            <div class="delete-video" id=${video.id}>DELETE VIDEO</div>
+            <div class="image-box">
+                <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
+            </div>
+            <div class="card-details-box">
+                <div class="playlist-video-title">${video.title}</div>
+                <div class="playlist-video-author">Uploaded by: ${video.author}</div>
+            </div>
+            <div class="delete-video" data-id=${video.id}><svg class="delete-video" data-id=${video.id} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 400C160 408.8 152.8 416 144 416C135.2 416 128 408.8 128 400V192C128 183.2 135.2 176 144 176C152.8 176 160 183.2 160 192V400zM240 400C240 408.8 232.8 416 224 416C215.2 416 208 408.8 208 400V192C208 183.2 215.2 176 224 176C232.8 176 240 183.2 240 192V400zM320 400C320 408.8 312.8 416 304 416C295.2 416 288 408.8 288 400V192C288 183.2 295.2 176 304 176C312.8 176 320 183.2 320 192V400zM317.5 24.94L354.2 80H424C437.3 80 448 90.75 448 104C448 117.3 437.3 128 424 128H416V432C416 476.2 380.2 512 336 512H112C67.82 512 32 476.2 32 432V128H24C10.75 128 0 117.3 0 104C0 90.75 10.75 80 24 80H93.82L130.5 24.94C140.9 9.357 158.4 0 177.1 0H270.9C289.6 0 307.1 9.358 317.5 24.94H317.5zM151.5 80H296.5L277.5 51.56C276 49.34 273.5 48 270.9 48H177.1C174.5 48 171.1 49.34 170.5 51.56L151.5 80zM80 432C80 449.7 94.33 464 112 464H336C353.7 464 368 449.7 368 432V128H80V432z"/></svg></div>
+            <div class="handle playlist-handle"><div class="handle inner-handle"></div></div>
         </div>`;
         playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
         videoNumber++;  // increment id number
@@ -288,7 +301,8 @@ function deleteVideo(id, name){
         updateTitleOnEdit()
         tempList.dateEdited = Date.now()
         // remove card from UI
-        let node = document.getElementById(id)
+        // let node = document.getElementById(id)
+        let node = document.querySelector('[data-id="' +id+ '"]')
         let parent = node.closest(".video-card")
         parent.remove()
         // update list order
@@ -406,21 +420,28 @@ function updateTitleOnEdit(){
     title.setAttribute("dateedited", Date.now())
 }
 
-function enableDrag(){
+function enableDrag(id){
+        // Array.from(card.children).forEach(element =>{
+        //     if(element.nodeName === "DIV"){
+        //         element.classList.add("hide-card-item")
+        //     }else{
+        //         element.classList.add("full-size")
+        //     }
+        // })
+    // })
+
+    let card = document.getElementById(id)
+    card.setAttribute("draggable", true)
+    card.classList.add("draggable")   
     let allCards = document.querySelectorAll(".video-card")
     allCards.forEach(card => {
-        card.setAttribute("draggable", true)
-        card.classList.add("draggable")   
+        card.addEventListener("dragstart", dragStart)
         card.addEventListener('dragenter', dragEnter)
         card.addEventListener('dragover', dragOver);
         card.addEventListener('dragleave', dragLeave);
         card.addEventListener('drop', drop);
-        card.addEventListener("dragstart", dragStart)
     })
-    // document.getElementById("playlist-video-1").addEventListener("dragstart", dragStart)
 }
-
-
 
 function dragStart(event){
     // give all cards temporary ids according to their index whenever drag begins
@@ -430,49 +451,76 @@ function dragStart(event){
         card.setAttribute("data-id", count)
         count++
     })
-    /////////////////
+   
     if(event.target.classList.contains("video-card")){
         event.dataTransfer.setData("text/plain", event.target.dataset.id);
     }else{
-        return;
+        return; // get parent item id here so we set the correct data regardless
     }
-    
-    event.dataTransfer.dropEffect = "move";
-    // event.currentTarget.style.border = "5px solid gold"
+
     setTimeout(()=>{
         event.target.classList.add("drag-start")
     },0)
-
-    
 }
 
 function dragEnter(event){
     event.preventDefault()   
+    console.log(event.target)
+    if(event.target.classList.contains("video-card")){
+        event.target.classList.add("drag-over")
+    }else{
+        event.target.closest(".video-card").classList.add("drag-over")
+    }
+    
 }
 
 function dragOver(event){
     event.preventDefault()
+    console.log(event.target)
+    if(event.target.classList.contains("video-card")){
+        event.target.classList.add("drag-over")
+    }else{
+        event.target.closest(".video-card").classList.add("drag-over")
+    }
 }
 
-function dragLeave(){
-
+function dragLeave(event){
+    if(event.target.classList.contains("video-card")){
+        event.target.classList.remove("drag-over")
+    }else{
+        event.target.closest(".video-card").classList.remove("drag-over")
+    }
+    console.log("DRAG LEAVE:")
+    console.log(event.target)
 }
 
 function drop(event){
     event.preventDefault()
-
-    let dropId = event.target.dataset.id
-    let container = document.getElementById("playlist-preview")
-    
-    let dragId = event.dataTransfer.getData("text/plain") // id of dragged item
-    let card = document.querySelector('[data-id="' +dragId+ '"]')
-   
     if(event.target.classList.contains("video-card")){
-        card.classList.remove("drag-start")
-        container.insertBefore(card, container.children[dropId])
+        event.target.classList.remove("drag-over")
     }else{
-        return
+        event.target.closest(".video-card").classList.remove("drag-over")
     }
+    console.log("DROP:")
+    console.log(event.target)
+    let dropId;
+
+    if(event.target.classList.contains("video-card")){
+        dropId = event.target.dataset.id
+        console.log(dropId)
+    }else{
+        dropId = event.target.closest(".video-card").dataset.id
+        console.log(dropId)
+    }
+    
+    let container = document.getElementById("playlist-preview")
+    let dragId = event.dataTransfer.getData("text/plain") // id of dragged item
+    let card = document.querySelector('[data-id="' +dragId+ '"]')   // dragged item
+   
+    card.classList.remove("drag-start")
+    console.log(dragId)
+    console.log(dropId)
+    container.insertBefore(card, container.children[dropId])    // drop item below selected
     
 }
 

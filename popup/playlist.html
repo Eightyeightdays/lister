@@ -10,51 +10,50 @@
 
   <div id="playlist-ui" class="playlist-ui">
     
-    
-    
-    <div id="sort-button-container" class="container">
-      <div id="playlistOrder"></div>
-      <button class="sort-button" id="arrange-list-titles-forwards">A-Z</button>
-      <button class="sort-button" id="arrange-list-titles-backwards">Z-A</button>
-      <button class="sort-button" id="arrange-list-titles-oldest">Oldest</button>
-      <button class="sort-button" id="arrange-list-titles-newest">Newest</button>
-      <button class="sort-button" id="arrange-list-titles-edited">Edited</button>
-    </div>
-
-    <div id="list-title-container" class="container">
-     
-    </div>
-
-    <div id="playlist-name-container" class="container">
+    <div id="settings-container" class="settings-container">
+      <div id="sort-button-container" class="container">
+        <div id="playlistOrder"></div>
+        <button class="sort-button" id="arrange-list-titles-forwards">A-Z</button>
+        <button class="sort-button" id="arrange-list-titles-backwards">Z-A</button>
+        <button class="sort-button" id="arrange-list-titles-oldest">Oldest</button>
+        <button class="sort-button" id="arrange-list-titles-newest">Newest</button>
+        <button class="sort-button" id="arrange-list-titles-edited">Edited</button>
+      </div>
+  
+      <div id="list-title-container" class="container">
+      </div>
+  
+      <div id="playlist-name-container" class="container">
+        <div id="current-playlist-container" class="container">
+          
+          
+          <button id="add-favourite">Favourite this list</button>
+        </div>
+  
+        <button id="add-playlist-name">Create new playlist</button>
+        <div id="playlist-name-title">Give your playlist a name:</div>
+        <input id="playlist-name-input" type="text" maxlength="80">
+        <button id="delete-current-playlist">Delete Playlist</button>
+      </div>
       
-      <div id="current-playlist-container" class="container">
+      <div id="other-buttons-container" class="container">
+        <button id="enableDrag">Enable drag and drop to sort</button>
+        <button id="clear-storage">DELETE ALL PLAYLISTS!</button>
+        <button id="add-to-playlist">Add To Playlist</button>
+        <button id="create-link">Get Link</button>
+        <button id="begin-playlist">Begin playlist</button>
+      </div>
+    </div>
+    
+    <div id="playlist-preview-container" class="playlist-preview-container">
+      <div id="playlist-header" class="playlist-header">
         <div id="current-playlist-label">Current Playlist:</div>
         <div id="current-playlist">None Created</div>
-        <button id="add-favourite">Favourite this list</button>
       </div>
-
-      <div id="playlist-name-title">Give your playlist a name:</div>
-      <button id="add-playlist-name">Create new playlist</button>
-      <input id="playlist-name-input" type="text" maxlength="80">
-
-      <button id="delete-current-playlist">Delete Playlist</button>
+      <div id="playlist-preview">
+      </div>
     </div>
-    
-    <div id="other-buttons-container" class="container">
-      <button id="enableDrag">Enable drag and drop to sort</button>
-      <button id="clear-storage">DELETE ALL PLAYLISTS!</button>
-      <button id="add-to-playlist">Add To Playlist</button>
-      <button id="create-link">Get Link</button>
-      <button id="begin-playlist">Begin playlist</a>
-    </div>
-    
 
-    <div id="playlist-preview-container" class="playlist-preview-container">
-          <div id="playlist-header" class="playlist-header">Playlist Title</div>
-          <div id="playlist-preview">
-    
-          </div>
-    </div>
   </div>
 
  
