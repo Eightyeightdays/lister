@@ -70,11 +70,6 @@ body{
     align-items: center;
 }
 
-.hide-card-item{
-    position: absolute;
-    z-index: -1;
-}
-
 .image-box{
     background: gold;
     display: flex;
@@ -139,12 +134,6 @@ body{
     height: 12%;
     border-top: 2px solid gainsboro;
     border-bottom: 2px solid gainsboro
-}
-
-.full-size{
-    width: 200px;
-    height: 220px;
-    object-fit: cover;
 }
 
 button{
@@ -254,3 +243,6 @@ svg{height: 1em;}
     border-bottom: 10px solid gold;
 }
 
+.save-changes{
+    display: none;
+}

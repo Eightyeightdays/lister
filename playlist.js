@@ -1,4 +1,4 @@
-// var videoNumber = 1;
+const currentPlaylistNode = document.getElementById("current-playlist");
 const playlistOrderNode = document.getElementById("playlistOrder");
 const star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="star"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>`
 
@@ -48,8 +48,6 @@ function listenForClicks() {
             let id = e.target.dataset.id
             let playlistName = document.getElementById("current-playlist").textContent;
             deleteVideo(id, playlistName)
-        }else if(e.target.id === "test"){
-            test()
         }else if(e.target.id === "delete-current-playlist"){
             let playlistName = document.getElementById("current-playlist").textContent;
             deletePlaylist(playlistName)
@@ -57,8 +55,10 @@ function listenForClicks() {
             beginPlaylist()
         }else if(e.target.id === "add-favourite"){
             setPlaylistFavourite()
-        }else if(e.target.id === "enableDrag"){
-            enableDrag();
+        }else if(e.target.id === "save-changes"){
+            updateListOrder()
+            hideUpdateButton()
+            alert("changes saved")  // UPDATE LATER
         }
     })
 
@@ -66,6 +66,7 @@ function listenForClicks() {
         if(e.target.classList.contains("handle")){
             let parent = e.target.closest(".video-card")
             enableDrag(parent.id);
+            showUpdateButton()
             console.log("MOUSE DOWN")
         }
     })
@@ -158,7 +159,7 @@ function createVideoCard(video){
     }
 
     let card = `
-        <div class="video-card" id="playlist-video-${videoNumber}">
+        <div class="video-card" id="playlist-video-${videoNumber}" data-videoid=${video.id}>
             <div class="image-box">
                 <img class="playlist-preview-image" src=${video.imgUrl} alt="${video.title}">
             </div>
@@ -308,15 +309,16 @@ function deleteVideo(id, name){
         // update list order
         let order = playlistOrderNode.textContent
         sortPlaylists(order)
-        // update localStorage
-        browser.tabs.query({active: true, currentWindow: true})
-        .then(response => browser.tabs.sendMessage(response[0].id, 
-            {
-                command: "update localStorage",
-                data: JSON.stringify(allLists)
-            }
-        )) 
-        .then(response => console.log(response.message)) 
+        // update localStorage  
+        // browser.tabs.query({active: true, currentWindow: true})
+        // .then(response => browser.tabs.sendMessage(response[0].id, 
+        //     {
+        //         command: "update localStorage",
+        //         data: JSON.stringify(allLists)
+        //     }
+        // )) 
+        // .then(response => console.log(response.message)) 
+        updateLocalStorage(allLists)    // replaces the above
     })
 }
 
@@ -421,15 +423,6 @@ function updateTitleOnEdit(){
 }
 
 function enableDrag(id){
-        // Array.from(card.children).forEach(element =>{
-        //     if(element.nodeName === "DIV"){
-        //         element.classList.add("hide-card-item")
-        //     }else{
-        //         element.classList.add("full-size")
-        //     }
-        // })
-    // })
-
     let card = document.getElementById(id)
     card.setAttribute("draggable", true)
     card.classList.add("draggable")   
@@ -501,10 +494,7 @@ function drop(event){
     }else{
         event.target.closest(".video-card").classList.remove("drag-over")
     }
-    console.log("DROP:")
-    console.log(event.target)
     let dropId;
-
     if(event.target.classList.contains("video-card")){
         dropId = event.target.dataset.id
         console.log(dropId)
@@ -516,12 +506,60 @@ function drop(event){
     let container = document.getElementById("playlist-preview")
     let dragId = event.dataTransfer.getData("text/plain") // id of dragged item
     let card = document.querySelector('[data-id="' +dragId+ '"]')   // dragged item
-   
     card.classList.remove("drag-start")
-    console.log(dragId)
-    console.log(dropId)
     container.insertBefore(card, container.children[dropId])    // drop item below selected
+}
+
+function updateListOrder(){
+    // reset indexes on newly sorted list
+    let currentPlaylist = currentPlaylistNode.textContent
+    let cardList = document.querySelectorAll(".video-card")
+    let newList = []
+    let tempArray = [];
+
+    cardList.forEach(item =>{
+        newList.push(item.dataset.videoid)
+    })
+
+    getLocalStorage()
+    .then(response =>{
+        let index = response.storage.findIndex(list => list.playlistName === currentPlaylist)
+        let allLists = [].concat(response.storage)
+        let originalList = allLists[index].videos
+        
+        newList.forEach(id =>{
+            originalList.forEach((idx, index) =>{
+                if(id === idx.id){
+                    tempArray.unshift(originalList[index])
+                }
+            })
+        })
+
+        allLists[index].videos = tempArray  // update video array 
+        updateLocalStorage(response.storage)
     
+    })
+    .catch(error => console.log(error))
+}
+
+function updateLocalStorage(data){
+    browser.tabs.query({active: true, currentWindow: true})
+        .then(response => browser.tabs.sendMessage(response[0].id, 
+            {
+                command: "update localStorage",
+                data: JSON.stringify(data)
+            }
+        )) 
+        .then(response => console.log(response.message)) 
+        .catch(error => console.log(error))
+}
+
+function showUpdateButton(){
+    document.getElementById("save-changes").style.display = "block"
+}
+
+function hideUpdateButton(){
+    document.getElementById("save-changes").style.display = "none"
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
