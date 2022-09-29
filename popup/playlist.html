@@ -11,47 +11,61 @@
   <div id="playlist-ui" class="playlist-ui">
     
     <div id="settings-container" class="settings-container">
-      <div id="sort-button-container" class="container">
-        <div id="playlistOrder"></div>
-        <button class="sort-button" id="arrange-list-titles-forwards">A-Z</button>
-        <button class="sort-button" id="arrange-list-titles-backwards">Z-A</button>
-        <button class="sort-button" id="arrange-list-titles-oldest">Oldest</button>
-        <button class="sort-button" id="arrange-list-titles-newest">Newest</button>
-        <button class="sort-button" id="arrange-list-titles-edited">Edited</button>
-      </div>
-  
-      <div id="list-title-container" class="container">
-      </div>
-  
-      <div id="playlist-name-container" class="container">
-        <div id="current-playlist-container" class="container">
+      <div id="list-main-container" class="list-main-container">
+        <div id="list-title-header" class="list-title-header">  <!-- RENAME MENU-->
+
+          <div id="sort-header-container" class="dropdown">
+            <div id="sort-header-button" class="dropdown-button header-button">SORT</div>
+            <div id="sort-button-container" class="dropdown-content">
+              <button class="sort-button" id="arrange-list-titles-forwards">A-Z</button>
+              <button class="sort-button" id="arrange-list-titles-backwards">Z-A</button>
+              <button class="sort-button" id="arrange-list-titles-oldest">Oldest</button>
+              <button class="sort-button" id="arrange-list-titles-newest">Newest</button>
+              <button class="sort-button" id="arrange-list-titles-edited">Edited</button>
+            </div>
+          </div>
+
+          <div id="create-header-container" class="dropdown">
+            <div id="create-header-button" class="dropdown-button header-button">CREATE</div>
+            <div id="create-menu-container" class="dropdown-content">
+              <div id="playlist-name-title">Give your playlist a name:</div>
+              <input id="playlist-name-input" type="text" maxlength="80">
+              <button id="add-playlist-name">Create new playlist</button>
+            </div>
+          </div>
           
+          <div id="delete-header-container" class="dropdown">
+            <div id="delete-header-button" class="dropdown-button header-button">DELETE</div>
+            <div id="delete-menu-container" class="dropdown-content">
+              <button id="clear-storage">DELETE ALL PLAYLISTS!</button>
+            </div>
+          </div>
           
-          <button id="add-favourite">Favourite this list</button>
+          <div id="playlistOrder" class="playlistOrder"></div>
         </div>
-  
-        <button id="add-playlist-name">Create new playlist</button>
-        <div id="playlist-name-title">Give your playlist a name:</div>
-        <input id="playlist-name-input" type="text" maxlength="80">
-        <button id="delete-current-playlist">Delete Playlist</button>
+        <div id="list-title-container" class="container list-title-container"></div>
       </div>
       
-      <div id="other-buttons-container" class="container">
-        <button id="clear-storage">DELETE ALL PLAYLISTS!</button>
+      <div id="main-buttons-container" class="main-buttons-container">
         <button id="add-to-playlist">Add To Playlist</button>
         <button id="create-link">Get Link</button>
         <button id="begin-playlist">Begin playlist</button>
       </div>
+
     </div>
     
     <div id="playlist-preview-container" class="playlist-preview-container">
       <div id="playlist-header" class="playlist-header">
-        <div id="current-playlist-label">Current Playlist:</div>
-        <div id="current-playlist">None Created</div>
-        <button id="save-changes" class="save-changes">Save Changes</button>
+        <div id="playlist-name-container" class="playlist-name-container">
+          <div id="current-playlist">None Created</div>
+        </div>
+        <div id="playlist-header-buttons" class="playlist-header-buttons">
+          <button id="delete-current-playlist" class="delete-current-playlist">Delete Playlist</button>
+          <button id="save-changes" class="save-changes">Save Changes</button>
+          <button id="add-favourite" class="add-favourite">Favourite this list</button>
+        </div>
       </div>
-      <div id="playlist-preview">
-      </div>
+      <div id="playlist-preview"></div>
     </div>
 
   </div>

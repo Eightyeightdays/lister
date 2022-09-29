@@ -22,10 +22,10 @@ body{
 
 .settings-container{
     background:rgb(124, 131, 230);
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     width: 100%;
-    height: 250px;
+    height: 100%;
 }
 
 .playlist-preview-container{
@@ -43,6 +43,20 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.playlist-name-container{
+    display: flex;
+    padding: 0.5em;
+}
+
+.playlist-header-buttons{
+    display: flex;
+    gap: 10em;
+}
+.delete-current-playlist{
+    position: relative;
+    left: 0;
 }
 
 #playlist-preview{
@@ -155,7 +169,7 @@ button:hover{
 
 
 #list-title-container{
-    height: 100%;
+    /* height: 100%; */
 }
 
 .list-title{
@@ -170,10 +184,13 @@ button:hover{
 .list-title-card:hover{
     cursor: pointer;
     background: black;
+    color: white;
 }
 
 .list-title-card{
     /* background: red; */
+    width: 100%;
+    padding: 0.2em;
 }
 
 #current-playlist-container{
@@ -185,11 +202,11 @@ button:hover{
 #current-playlist{
     background: white;
     /* padding: 0.3em; */
-    font-size: 30px;
+    font-size: 20px;
 }
 
 #playlist-name-title{
-    background: white;
+    /* background: white; */
     text-align: center;
 }
 
@@ -198,7 +215,7 @@ button:hover{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: tomato;
+    /* background: tomato; */
     gap: 0.5em;
 }
 
@@ -245,4 +262,76 @@ svg{height: 1em;}
 
 .save-changes{
     display: none;
+}
+
+#create{
+    background: red;
+}
+
+.list-title-container{
+    background: white;
+}
+
+.list-title-header{
+    background: teal;
+    height: 30px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1em;
+}
+
+.header-button{
+    background: gold;
+    height: 100%;
+    display: flex;
+    place-items: center;
+    padding: 0.5em;
+}
+
+.list-settings-button{
+    width: max-content;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+
+.delete-menu-container{
+    display: none;
+}
+
+.dropdown{
+    position: relative;
+    height: 100%;
+}
+.dropdown:hover{
+    cursor: pointer;
+}
+.dropdown-button{
+    height: 100%;
+}
+.dropdown-content{
+    position: absolute;
+    left: 0;
+    width: 2fr;
+    display: none;
+    background: gainsboro;
+}
+.dropdown:hover .dropdown-content{
+    display: block;
+}
+
+
+.playlistOrder{
+    background: gold;
+}
+
+.main-buttons-container{
+    background: tomato;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   
 }

@@ -193,15 +193,6 @@
             return Promise.resolve({message: "Storage updated"})
         }else if(message.command === "delete playlist"){
             deletePlaylist(message.name)
-        }else if(message.command === "add url"){
-            return getVideoDetails(message.url)    // adding "return" here solved the problem
-            .then(details => {
-                let id = localStorage.getItem("currentPlaylist")
-                updateCurrentList(details, message.url, id)
-                details.id = frog // add videoId to details object
-                return Promise.resolve({message: "video details fetched", details: details})
-            })
-            .catch(error => console.log(error))
         }else if(message.command === "set current playlist"){
             localStorage.setItem("currentPlaylist", message.playlistName)
             return Promise.resolve({message: `current playlist set to ${message.playlistName}`})
