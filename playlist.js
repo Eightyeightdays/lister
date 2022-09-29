@@ -68,7 +68,6 @@ function listenForClicks() {
         if(e.target.classList.contains("handle")){
             let parent = e.target.closest(".video-card")
             enableDrag(parent.id);
-            showUpdateButton()
             console.log("MOUSE DOWN")
         }
     })
@@ -222,8 +221,8 @@ function createTitlesList(data, order){
         }else{
             title = 
             `<div class="list-title-card" id=${hyphenatedTitle} datecreated=${list.dateCreated} dateedited=${list.dateEdited} favourite=true>
-                ${list.playlistName}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="star"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                ${list.playlistName}
             </div>`;
         }
        
@@ -389,20 +388,21 @@ function promptUser(){
 }
 
 function setPlaylistFavourite(){
-    playlist = document.getElementById("current-playlist").textContent
+    let playlist = document.getElementById("current-playlist").textContent
+    let hyphenatedPlaylist = hyphenate(document.getElementById("current-playlist").textContent)
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "favourite", list: playlist})) 
     .then(response => console.log(response))
     .catch(error => console.log(error))
 
-    let container = document.getElementById(playlist)
+    let container = document.getElementById(hyphenatedPlaylist)
    
     if(container.querySelector(".star")){
         container.setAttribute("favourite", false)
         container.querySelector(".star").remove()
     }else{
         container.setAttribute("favourite", true)
-        container.insertAdjacentHTML("afterbegin", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="star" id=${playlist}-star><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>`)
+        container.insertAdjacentHTML("afterbegin", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="star" ><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>`)
     }
 
     let order = playlistOrderNode.textContent
@@ -429,7 +429,19 @@ function enableDrag(id){
     })
 }
 
+let checkOrderString = "";
+function getTemporaryOrder(){
+    let cardList = document.querySelectorAll(".video-card")
+    cardList.forEach(card => {
+        checkOrderString += card.dataset.videoid    // for detecting playlist order changes
+    })
+}
+
 function dragStart(event){
+    // only create a new string on open or after save
+    if(checkOrderString === ""){
+        getTemporaryOrder()
+    }
     // give all cards temporary ids according to their index whenever drag begins
     let cardList = document.querySelectorAll(".video-card")
     let count = 1;
@@ -447,22 +459,23 @@ function dragStart(event){
     setTimeout(()=>{
         event.target.classList.add("drag-start")
     },0)
+
+    console.log("DRAG START:")
+    console.log(checkOrderString)
+    console.log("------")
 }
 
 function dragEnter(event){
     event.preventDefault()   
-    console.log(event.target)
     if(event.target.classList.contains("video-card")){
         event.target.classList.add("drag-over")
     }else{
         event.target.closest(".video-card").classList.add("drag-over")
     }
-    
 }
 
 function dragOver(event){
     event.preventDefault()
-    console.log(event.target)
     if(event.target.classList.contains("video-card")){
         event.target.classList.add("drag-over")
     }else{
@@ -476,8 +489,6 @@ function dragLeave(event){
     }else{
         event.target.closest(".video-card").classList.remove("drag-over")
     }
-    console.log("DRAG LEAVE:")
-    console.log(event.target)
 }
 
 function drop(event){
@@ -501,9 +512,38 @@ function drop(event){
     let card = document.querySelector('[data-id="' +dragId+ '"]')   // dragged item
     card.classList.remove("drag-start")
     container.insertBefore(card, container.children[dropId])    // drop item below selected
+    
+    let change = detectPlaylistOrderChange()
+    if(change){
+        showUpdateButton()
+    }else{
+        hideUpdateButton()
+    }
+}
+
+
+function detectPlaylistOrderChange(){
+    let testString = "";
+    let cardList = document.querySelectorAll(".video-card")
+    cardList.forEach(card => {
+        testString += card.dataset.videoid;
+    })
+    console.log("DETECTING:")
+    console.log(checkOrderString)
+    console.log(testString)
+    console.log("-----")
+    if(checkOrderString === testString){
+        testString = "";
+        return false
+    }else{
+        testString = "";
+        return true
+    }
 }
 
 function updateListOrder(){
+    testString = "";    
+    checkOrderString = "";  // only clear strings on save
     // reset indexes on newly sorted list
     let currentPlaylist = currentPlaylistNode.textContent
     let cardList = document.querySelectorAll(".video-card")
