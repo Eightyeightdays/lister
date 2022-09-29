@@ -166,12 +166,6 @@ button:hover{
 
 }
 
-
-
-#list-title-container{
-    /* height: 100%; */
-}
-
 .list-title{
     background: rgb(124, 161, 230);
     border: 0.5em;
@@ -248,6 +242,14 @@ a:hover{
 
 svg{height: 1em;}
 
+.save-icon{
+    height: 2em;
+}
+
+.save-changes:hover .save-icon{
+    fill: white;
+}
+
 .draggable{
     cursor: pointer;
 }
@@ -262,6 +264,14 @@ svg{height: 1em;}
 
 .save-changes{
     display: none;
+    width: 100%;
+}
+
+.add-icon, .link-icon, .start-icon{
+    height: 5em;
+}
+.add-video:hover, .create-link:hover, .start-playlist:hover{
+    fill: gold;
 }
 
 #create{
@@ -270,6 +280,7 @@ svg{height: 1em;}
 
 .list-title-container{
     background: white;
+    padding: 1em;
 }
 
 .list-title-header{
@@ -333,5 +344,4 @@ svg{height: 1em;}
     flex-direction: column;
     justify-content: center;
     align-items: center;
-   
 }

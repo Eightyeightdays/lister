@@ -14,10 +14,10 @@ function listenForClicks() {
         if(e.target.id === "add-playlist-name"){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addName)
-        }else if (e.target.id === "add-to-playlist") {
+        }else if (e.target.classList.contains("add-video")) {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addVideo)
-        }else if(e.target.id === "create-link"){
+        }else if(e.target.classList.contains("create-link")){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(createLink)
         }else if(e.target.classList.contains("list-title-card")){
@@ -53,13 +53,12 @@ function listenForClicks() {
         }else if(e.target.id === "delete-current-playlist"){
             let playlistName = document.getElementById("current-playlist").textContent;
             deletePlaylist(playlistName)
-        }else if(e.target.id === "begin-playlist"){
+        }else if(e.target.classList.contains("start-playlist")){
             beginPlaylist()
         }else if(e.target.id === "add-favourite"){
             setPlaylistFavourite()
-        }else if(e.target.id === "save-changes"){
+        }else if(e.target.classList.contains("save-changes")){
             updateListOrder()
-            hideUpdateButton()
             alert("changes saved")  // UPDATE LATER
         }
     })
@@ -563,10 +562,11 @@ function updateListOrder(){
         let allLists = [].concat(response.storage)
         let originalList = allLists[index].videos
         
-        newList.forEach(id =>{
-            originalList.forEach((idx, index) =>{
-                if(id === idx.id){
-                    tempArray.unshift(originalList[index])
+        newList.forEach((newItem, newIndex) =>{
+            originalList.forEach((oldItem, oldIndex) =>{
+                if(newItem === oldItem.id){
+                    tempArray.unshift(originalList[oldIndex])
+                    newIndex++
                 }
             })
         })
@@ -577,6 +577,11 @@ function updateListOrder(){
     
     })
     .catch(error => console.log(error))
+    hideUpdateButton()
+
+    console.log(tempArray)
+    console.log(newList)
+    console.log(newString)
 }
 
 function updateLocalStorage(data){
@@ -592,7 +597,9 @@ function updateLocalStorage(data){
 }
 
 function showUpdateButton(){
-    document.getElementById("save-changes").style.display = "block"
+    document.querySelectorAll(".save-changes").forEach(el =>{
+        el.style.display = "block"
+    })
 }
 
 function hideUpdateButton(){
