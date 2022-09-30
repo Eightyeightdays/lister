@@ -14,18 +14,18 @@ body{
     justify-content: flex-start;
     align-items: center;
     width: 700px;
-    height: 500px;
+    height: 900px;
     font-size: 15px;
     gap: 1em;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .settings-container{
     background:rgb(124, 131, 230);
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: 100%;
+    /* height: 200px; */
 }
 
 .playlist-preview-container{
@@ -33,7 +33,7 @@ body{
     display: flex;
     flex-direction: column;
     background: red;
-    height: 300px;
+    height: 100%;
     width: 100%;
 }
 
@@ -59,8 +59,16 @@ body{
     left: 0;
 }
 
+#test{
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    background: salmon;
+    width: 100%;
+    /* height: 100%; */
+}
 #playlist-preview{
-    background: white;
+    background: black;
     width: 100%;
     padding: 15px;
     display: grid;
@@ -71,21 +79,17 @@ body{
 }
 
 .video-card{
-    background: gainsboro; 
+    background: #e9e9ed;
     width: 100%;
     height: 100px;
-    /* display: flex;
-    justify-content: space-around; 
-    align-items: center; */
-
-    overflow: hidden;
     display: grid;
-    grid-template-columns: 120px 1fr max-content 20px;
+    grid-template-columns: 1fr 20px;
     align-items: center;
+    overflow: hidden;
 }
 
 .image-box{
-    background: gold;
+    background: turquoise;
     display: flex;
     place-items: center;
     height: 67.15px;
@@ -96,8 +100,6 @@ body{
 }
 
 .playlist-preview-image{
-    /* width: 100%; */
-    /* height: 100%; */
     height: 95px;
     width: 220px;
     object-fit: cover;
@@ -127,7 +129,7 @@ body{
 .playlist-video-author{
     /* background: dodgerblue; */
     font-size: 12px;
-    color: white;
+    /* color: white; */
     font-weight: 600;
 }
 
@@ -151,7 +153,7 @@ body{
 }
 
 button{
-    background: gold;
+    /* background: gold; */
     font-size: 12px;
     padding: 0.5em;
     cursor: pointer;
@@ -213,17 +215,27 @@ button:hover{
     gap: 0.5em;
 }
 
-a{
-    text-align: center;
-    background: gold;
-    padding: 0.5em;
-    width: 100%;
+a:visited, a{
+    color: initial;
+}
+
+.card-link{
+    display: grid;
+    grid-template-columns: 120px 1fr max-content;
+    align-items: center;
+    height: 100%;
+    width: ;
+    text-decoration-line: none;
+}
+.video-card:hover{
+    background: white;
+    box-shadow: 0px 20px 8px -11px rgba(0,0,0,0.54);
 }
 
 a:hover{
     cursor: pointer;
-    background: black;
-    color: white;
+    /* background: black; */
+    /* color: white; */
 }
 
 .delete-video {
@@ -241,6 +253,10 @@ a:hover{
 }
 
 svg{height: 1em;}
+
+.delete-video:hover{
+    fill:red;
+}
 
 .save-icon{
     height: 2em;
@@ -325,9 +341,10 @@ svg{height: 1em;}
 .dropdown-content{
     position: absolute;
     left: 0;
-    width: 2fr;
+    width: max-content;
     display: none;
     background: gainsboro;
+    z-index: 1;
 }
 .dropdown:hover .dropdown-content{
     display: block;
@@ -341,7 +358,6 @@ svg{height: 1em;}
 .main-buttons-container{
     background: tomato;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }

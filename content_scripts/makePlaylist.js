@@ -94,11 +94,12 @@
         }
          
         let end = start + 12;
-        let currentId = url.substring(start, end) + ",";
+        let currentId = url.substring(start, end) + ",";    // COMMAS ADDED TO VIDEO ID HERE
        
         //////////
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
+        console.log(tempString)
         tempList.playlistString = tempString;       // add temp string to temp list
 
         let newVideo = {
@@ -106,7 +107,8 @@
             title: data.title,
             author: data.author,
             imgUrl: data.imgUrl,
-            dateAdded: Date.now()
+            dateAdded: Date.now(),
+            videoUrl: url
         }
 
         tempList.dateEdited = Date.now();
@@ -131,6 +133,7 @@
                 videoDetails.title = data.title;        
                 videoDetails.author = data.author_name;
                 videoDetails.imgUrl = data.thumbnail_url;
+                console.log(data)
             })
         return videoDetails;
     }
