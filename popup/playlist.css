@@ -40,7 +40,7 @@ body{
 .playlist-preview{
     background: rgb(255, 255, 255);
     width: 100%;
-    height: 380px;
+    height: 400px;
     padding: 15px;
     display: grid;
     grid-template-columns: 1fr;
@@ -50,26 +50,21 @@ body{
 }
 
 .playlist-header{
-    background:rgb(124, 230, 195);
+    background:gainsboro;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.playlist-name-container{
-    display: flex;
-    padding: 0.5em;
-}
+
 
 .playlist-header-buttons{
     display: flex;
     gap: 10em;
 }
-.delete-current-playlist{
-    position: relative;
-    left: 0;
-}
+
+
 
 
 .video-card{
@@ -83,14 +78,12 @@ body{
 }
 
 .image-box{
-    background: turquoise;
+    background: gold;
     display: flex;
     place-items: center;
     height: 67.15px;
     width: 120px;
     overflow: hidden;
-    /* position: relative;
-    left: -10px; */
 }
 
 .playlist-preview-image{
@@ -219,9 +212,7 @@ a:hover{
 
 svg{height: 1em;}
 
-.delete-video:hover{
-    fill:red;
-}
+
 
 .save-icon{
     height: 2em;
@@ -263,13 +254,7 @@ svg{height: 1em;}
 
 
 
-.header-button{
-    background: gold;
-    height: 100%;
-    display: flex;
-    place-items: center;
-    padding: 0.5em;
-}
+
 
 .list-settings-button{
     width: max-content;
@@ -304,7 +289,10 @@ svg{height: 1em;}
 }
 .menu-item:hover{
     cursor: pointer;
-    background: white;
+    background: black;
+}
+.menu-item:hover svg{
+    fill: gold;
 }
 
 .settings-display{
@@ -332,6 +320,20 @@ svg{height: 1em;}
     display: flex;
     justify-content: center;
     height: 100%;
+    gap: 0.5em;
+}
+
+.main-button{
+    border-radius: 5px;
+    background: white;
+    border: 5px solid black;
+    transition: background 0.5s ease-out;
+}
+.main-button:hover{
+    background: black;
+}
+.main-button:hover svg{
+    fill: gold;
 }
 
 .list-title-main{
@@ -419,13 +421,72 @@ svg{height: 1em;}
 }
 
 .current-playlist{
-    background: white;
+    background: gainsboro;
     font-size: 14px;
     text-align: center;
 }
+.current-playlist-settings{
+    position: relative;
+}
+.show-more-settings{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    color: gold;
+    position: absolute;
+    top: 33px;
+    right: -2px;
+    width: max-content;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+}
+.label{
+    display: flex;
+    align-items: center;
+    padding: 1em;
+    font-size: 20px;
+}
+.bin-icon{
+    margin: 0 1em; 
+    fill: gold;
+}
+.label:hover{
+    cursor: pointer;
+    background: gold;
+    color: black;
+}
+.label:hover svg{
+    fill: black;
+}
+
 
 .add-playlist-name{
     height: 100%;
     width: 50%;
     font-size: 20px;
+}
+
+.delete-video:hover{
+    fill:gold;
+}
+
+.header-button{
+    height: 1.5em;
+}
+
+.header-button:hover{
+    cursor: pointer;
+}
+
+.add-favourite{
+    fill: gold;
+}
+
+.playlist-name-container{
+    display: flex;
+    align-items: center;
+    padding: 0.5em;
+    gap: 1em;
 }

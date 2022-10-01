@@ -50,12 +50,13 @@ function listenForClicks() {
             let id = e.target.dataset.id
             let playlistName = document.getElementById("current-playlist").textContent;
             deleteVideo(id, playlistName)
-        }else if(e.target.id === "delete-current-playlist"){
+        }else if(e.target.classList.contains("delete-current-playlist")){
             let playlistName = document.getElementById("current-playlist").textContent;
             deletePlaylist(playlistName)
+            document.getElementById("show-more-settings").style.display = "none"
         }else if(e.target.classList.contains("start-playlist")){
             beginPlaylist()
-        }else if(e.target.id === "add-favourite"){
+        }else if(e.target.classList.contains("add-favourite")){
             setPlaylistFavourite()
         }else if(e.target.classList.contains("save-changes")){
             updateListOrder()
@@ -66,6 +67,13 @@ function listenForClicks() {
             }, 100)
         }else if(e.target.classList.contains("menu-item")){
             displaySettings(e.target.id)
+        }else if(e.target.classList.contains("open-button")){
+            let box = document.getElementById("show-more-settings");
+            if(box.style.display === "flex"){
+                box.style.display = "none"
+            }else{
+                box.style.display = "flex";
+            }
         }
     })
 
@@ -356,7 +364,8 @@ function hydrateUi(){
 
 function deletePlaylist(name){
     removeCards()   // clear playlist preview
-    document.getElementById(name).remove()  // remove list title
+    let hyphenatedTitle = hyphenate(name);
+    document.getElementById(hyphenatedTitle).remove()  // remove list title
     document.getElementById("current-playlist").textContent = "None Selected"   // remove current
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "delete playlist", name: name})) 
