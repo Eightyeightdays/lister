@@ -4,10 +4,10 @@ const star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" clas
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-        if(document.getElementById("current-playlist").textContent === "None Created" && e.target.id !== "add-playlist-name" && e.target.id !== "playlist-name-input"){
-            promptUser()
-            return;
-        }
+        // if(document.getElementById("current-playlist").textContent === "None Created" && e.target.id !== "add-playlist-name" && e.target.id !== "playlist-name-input"){
+        //     promptUser()
+        //     return;
+        // }
 
         console.log(e.target)    // VERIFY
 
@@ -64,6 +64,8 @@ function listenForClicks() {
             setTimeout(()=>{
                 window.close()
             }, 100)
+        }else if(e.target.classList.contains("menu-item")){
+            displaySettings(e.target.id)
         }
     })
 
@@ -569,15 +571,6 @@ function updateListOrder(){
         let allLists = [].concat(response.storage)
         let originalList = allLists[index].videos
         
-        // newList.forEach((newItem, newIndex) =>{
-        //     originalList.forEach((oldItem, oldIndex) =>{
-        //         if(newItem === oldItem.id){
-        //             tempArray.unshift(originalList[oldIndex])
-        //             newIndex++
-        //         }
-        //     })
-        // })
-        ///
         for (let index = 0; index < newList.length; index++) {
             for (let index2 = 0; index2 < newList.length; index2++) {
                 if(newList[index] === originalList[index2].id){
@@ -629,6 +622,19 @@ function hyphenate(title){
     let regex = /\s/g;
     return title.replace(regex, "-")
 }
+
+function displaySettings(id){
+    let dataId = document.getElementById(id).dataset.id
+    let containers = document.querySelectorAll(".settings-container");
+    containers.forEach(item => {
+        if(item.dataset.id === dataId){
+            item.style.display = "flex"
+        }else{
+            item.style.display = "none"
+        }
+    })
+}
+
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(hydrateUi)

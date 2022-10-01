@@ -16,12 +16,12 @@ body{
     width: 700px;
     height: 900px;
     font-size: 15px;
-    gap: 1em;
+    /* gap: 1em; */
     /* overflow: hidden; */
 }
 
-.settings-container{
-    background:rgb(124, 131, 230);
+.settings-main{
+    background:white;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -35,6 +35,18 @@ body{
     background: red;
     height: 100%;
     width: 100%;
+}
+
+.playlist-preview{
+    background: rgb(255, 255, 255);
+    width: 100%;
+    height: 380px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: max-content;
+    overflow-y: scroll;
+    gap: 5px;
 }
 
 .playlist-header{
@@ -59,24 +71,6 @@ body{
     left: 0;
 }
 
-#test{
-    position: absolute;
-    left: 0;
-    z-index: 2;
-    background: salmon;
-    width: 100%;
-    /* height: 100%; */
-}
-#playlist-preview{
-    background: black;
-    width: 100%;
-    padding: 15px;
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 5px;
-    overflow-y: scroll;
-}
 
 .video-card{
     background: #e9e9ed;
@@ -177,35 +171,6 @@ button:hover{
     height: 100%;
 }
 
-.list-title-card:hover{
-    cursor: pointer;
-    background: black;
-    color: white;
-}
-
-.list-title-card{
-    /* background: red; */
-    width: 100%;
-    padding: 0.2em;
-}
-
-#current-playlist-container{
-    padding: 0.5em;
-    background: green;
-    width: 100%;
-}
-
-#current-playlist{
-    background: white;
-    /* padding: 0.3em; */
-    font-size: 20px;
-}
-
-#playlist-name-title{
-    /* background: white; */
-    text-align: center;
-}
-
 .container{
     display: flex;
     flex-direction: column;
@@ -294,19 +259,9 @@ svg{height: 1em;}
     background: red;
 }
 
-.list-title-container{
-    background: white;
-    padding: 1em;
-}
 
-.list-title-header{
-    background: teal;
-    height: 30px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 1em;
-}
+
+
 
 .header-button{
     background: gold;
@@ -328,36 +283,149 @@ svg{height: 1em;}
     display: none;
 }
 
-.dropdown{
+/* NEW UI STYLES **************************************************************************/
+
+.settings-menu{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    /* background:rgb(124, 230, 195); */
+    margin: 0.2em;
+    gap: 0.5em;
+}
+
+.menu-item{
+    padding: 1em;
+    background: gold;
+    width: 100%;
+    text-align: center;
+    transition: background 0.3s ease-out;
+    font-size: 18px;
+    border-radius: 5px;
+}
+.menu-item:hover{
+    cursor: pointer;
+    background: white;
+}
+
+.settings-display{
+    height: 100px;
+    /* background: greenyellow; */
+}
+
+.settings-container{
+    display: none;
+    height: 100%;
+}
+
+.create-settings-container, .delete-settings-container{
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 10px;
+}
+
+.delete-settings-container{
+    flex-direction: column;
+}
+
+.main-settings-container{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+.list-title-main{
     position: relative;
     height: 100%;
 }
-.dropdown:hover{
-    cursor: pointer;
+
+.list-title-container{
+    flex-direction: column;
+    background: white;
+    overflow-y: scroll;
 }
-.dropdown-button{
+
+.sort-button{
     height: 100%;
+    font-size: 20px;
 }
-.dropdown-content{
-    position: absolute;
-    left: 0;
+
+.delete-all-button{
     width: max-content;
-    display: none;
-    background: gainsboro;
-    z-index: 1;
-}
-.dropdown:hover .dropdown-content{
-    display: block;
+    height: 50%;
+    font-size: 20px;
+    background: black;
+    color: white;
+    border: 5px solid transparent;
+    transition: border 0.5s ease-out;
+    border-radius: 5px;
 }
 
-
-.playlistOrder{
+.delete-all-button:hover{
+    color: black;
     background: gold;
+    border: 5px solid black;
 }
 
-.main-buttons-container{
-    background: tomato;
+.playlist-order-container{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: gold;
+    opacity: 0.7;
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding: 0.5em;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.playlistOrder{
+    /* background: gold; */
+    text-align: center;
+}
+
+.playlist-name-input{
+    width: 300px;
+    height: 2em;
+    border: none;
+    background: gold;
+    border-radius: 2px;
+    outline: 5px solid transparent;
+    transition: outline 0.5s ease-out;
+}
+.playlist-name-input:focus{
+    outline: 5px solid black;
+}
+
+.playlist-name-title{
+    padding: 0.5em;
+    text-align: center;
+}
+
+.list-title-card:hover{
+    cursor: pointer;
+    background: black;
+    color: white;
+}
+
+.list-title-card{
+    font-size: 13px;
+    width: 100%;
+    padding: 0.5em;
+}
+
+.current-playlist{
+    background: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.add-playlist-name{
+    height: 100%;
+    width: 50%;
+    font-size: 20px;
 }
