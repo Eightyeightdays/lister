@@ -99,6 +99,7 @@
         //////////
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
+        alert(currentId.length)
         console.log(tempString)
         tempList.playlistString = tempString;       // add temp string to temp list
 
