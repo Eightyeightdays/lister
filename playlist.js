@@ -4,16 +4,17 @@ const star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" clas
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-        // if(document.getElementById("current-playlist").textContent === "None Created" && e.target.id !== "add-playlist-name" && e.target.id !== "playlist-name-input"){
+        // if(currentPlaylistNode.textContent === "None Created" && e.target.id !== "add-playlist-name" && e.target.id !== "playlist-name-input"){
         //     promptUser()
         //     return;
         // }
 
-        console.log(e.target)    // VERIFY
+        // console.log(e.target)    // VERIFY
 
         if(e.target.id === "add-playlist-name"){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addName)
+
         }else if (e.target.classList.contains("add-video")) {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addVideo)
@@ -21,39 +22,50 @@ function listenForClicks() {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(createLink)
         }else if(e.target.classList.contains("list-title-card")){
-            console.log(e.target.id)
             let realTitle = e.target.textContent.trim()    // this should display correctly
-            console.log(realTitle)
             selectPlaylistTitle(realTitle)
-            document.getElementById("current-playlist").textContent = realTitle;
+            currentPlaylistNode.textContent = realTitle;
         }else if(e.target.id === "clear-storage"){
             clearLocalStorage()
             removeCards()
             removePlaylistTitles()
-            document.getElementById("current-playlist").textContent = "None created"
+            currentPlaylistNode.textContent = "None Created"
         }else if(e.target.id === "arrange-list-titles-forwards"){
             sortPlaylists("forwards");
             playlistOrderNode.textContent = "forwards"
+            displaySettings("list")
         }else if(e.target.id === "arrange-list-titles-backwards"){
             sortPlaylists("backwards");
             playlistOrderNode.textContent = "backwards"
+            displaySettings("list")
         }else if(e.target.id === "arrange-list-titles-oldest"){
             sortPlaylists("oldest");
             playlistOrderNode.textContent = "oldest"
+            displaySettings("list")
         }else if(e.target.id === "arrange-list-titles-newest"){
             sortPlaylists("newest");
             playlistOrderNode.textContent = "newest"
+            displaySettings("list")
         }else if(e.target.id === "arrange-list-titles-edited"){
             sortPlaylists("edited");
             playlistOrderNode.textContent = "edited"
+            displaySettings("list")
         }else if(e.target.classList.contains("delete-video")){
             let id = e.target.dataset.id
-            let playlistName = document.getElementById("current-playlist").textContent;
+            let playlistName = currentPlaylistNode.textContent;
             deleteVideo(id, playlistName)
         }else if(e.target.classList.contains("delete-current-playlist")){
-            let playlistName = document.getElementById("current-playlist").textContent;
-            deletePlaylist(playlistName)
+            let playlistName = currentPlaylistNode.textContent;
+            deletePlaylist(playlistName)    // changes textContent to "None Selected"
             document.getElementById("show-more-settings").style.display = "none"
+            let container = document.getElementById("list-title-container")
+            console.log(container.children.length)
+            if(container.children.length < 1){
+                currentPlaylistNode.textContent = "None Created"
+                displaySettings("create")
+            }else{
+                displaySettings("list")
+            }
         }else if(e.target.classList.contains("start-playlist")){
             beginPlaylist()
         }else if(e.target.classList.contains("add-favourite")){
@@ -65,14 +77,17 @@ function listenForClicks() {
             setTimeout(()=>{
                 window.close()
             }, 100)
-        }else if(e.target.classList.contains("menu-item")){
-            displaySettings(e.target.id)
+        }else if(e.target.classList.contains("settings-item")){
+            displaySettings(e.target.dataset.id)
         }else if(e.target.classList.contains("open-button")){
             let box = document.getElementById("show-more-settings");
             if(box.style.display === "flex"){
                 box.style.display = "none"
             }else{
                 box.style.display = "flex";
+                setTimeout(()=>{
+                    box.style.display = "none"
+                }, 3000)
             }
         }
     })
@@ -115,15 +130,16 @@ function addName(tabs) {
     .then(document.getElementById("playlist-name-input").value = "");   // clear input field
     setCurrentPlaylist(title)
     removeCards()
-    document.getElementById("current-playlist").textContent = title;
+    currentPlaylistNode.textContent = title;
     let order = playlistOrderNode.textContent
     sortPlaylists(order)
+    displaySettings("list")
 }
 
 function addVideo(tabs) {
     browser.tabs.sendMessage(tabs[0].id, {  // why doesn't this start with a query?
         command: "add video",
-        id: document.getElementById("current-playlist").textContent
+        id: currentPlaylistNode.textContent
     })
     .then(response => {
         console.log(response)
@@ -141,7 +157,7 @@ function createLink(){
     let something = browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {
         command: "create link",
-        id: document.getElementById("current-playlist").textContent
+        id: currentPlaylistNode.textContent
     }))
     .then(response => response)
     .catch(error => console.log(error))
@@ -199,7 +215,7 @@ function selectPlaylistTitle(id){
 }
 
 function setCurrentPlaylist(playlistName){
-    document.getElementById("current-playlist").textContent = playlistName;
+    currentPlaylistNode.textContent = playlistName;
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "set current playlist", playlistName: playlistName})) 
     .then(response => console.log(response))
@@ -350,13 +366,18 @@ function hydrateUi(){
     .then(response => {
         if(response.storage){
             createTitlesList(response.storage, response.order);
+            showRelevantUi()
+        }else{
+            displaySettings("create")
         }
+
         playlistOrderNode.textContent = response.order;
     })
     .then(getCurrentPlaylist)
     .then(response => {
         showSelectedList(response.current)
-        document.getElementById("current-playlist").textContent = response.current
+        currentPlaylistNode.textContent = response.current
+        
     })
     .catch(error => console.log(error))
 }
@@ -365,7 +386,8 @@ function deletePlaylist(name){
     removeCards()   // clear playlist preview
     let hyphenatedTitle = hyphenate(name);
     document.getElementById(hyphenatedTitle).remove()  // remove list title
-    document.getElementById("current-playlist").textContent = "None Selected"   // remove current
+    // currentPlaylistNode.textContent = "None Selected"   // remove current
+    console.log(currentPlaylistNode.textContent)
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "delete playlist", name: name})) 
 }
@@ -404,8 +426,8 @@ function promptUser(){
 }
 
 function setPlaylistFavourite(){
-    let playlist = document.getElementById("current-playlist").textContent
-    let hyphenatedPlaylist = hyphenate(document.getElementById("current-playlist").textContent)
+    let playlist = currentPlaylistNode.textContent
+    let hyphenatedPlaylist = hyphenate(playlist)
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "favourite", list: playlist})) 
     .then(response => console.log(response))
@@ -426,7 +448,7 @@ function setPlaylistFavourite(){
 }
 
 function updateTitleOnEdit(date){
-    let currentPlaylist = hyphenate(document.getElementById("current-playlist").textContent)
+    let currentPlaylist = hyphenate(currentPlaylistNode.textContent)
     let title = document.getElementById(currentPlaylist)
     title.setAttribute("dateedited", date)
 }
@@ -476,9 +498,6 @@ function dragStart(event){
         event.target.classList.add("drag-start")
     },0)
 
-    console.log("DRAG START:")
-    console.log(checkOrderString)
-    console.log("------")
 }
 
 function dragEnter(event){
@@ -517,10 +536,8 @@ function drop(event){
     let dropId;
     if(event.target.classList.contains("video-card")){
         dropId = event.target.dataset.id
-        console.log(dropId)
     }else{
         dropId = event.target.closest(".video-card").dataset.id
-        console.log(dropId)
     }
     
     let container = document.getElementById("playlist-preview")
@@ -544,10 +561,7 @@ function detectPlaylistOrderChange(){
     cardList.forEach(card => {
         testString += card.dataset.videoid;
     })
-    console.log("DETECTING:")
-    console.log(checkOrderString)
-    console.log(testString)
-    console.log("-----")
+   
     if(checkOrderString === testString){
         testString = "";
         return false
@@ -571,7 +585,7 @@ function updateListOrder(){
         newList.push(item.dataset.videoid)
         newString += item.dataset.videoid   // 
     })
-    console.log(newString)
+    
 
     getLocalStorage()
     .then(response =>{
@@ -588,11 +602,6 @@ function updateListOrder(){
             }
         }
 
-       
-        console.log(tempArray)
-        console.log(newList)
-        console.log(newString)
-        ///
         allLists[index].videos = tempArray  // update video array 
         allLists[index].playlistString = newString  // update playlist url
         updateLocalStorage(response.storage)
@@ -632,10 +641,9 @@ function hyphenate(title){
 }
 
 function displaySettings(id){
-    let dataId = document.getElementById(id).dataset.id
     let containers = document.querySelectorAll(".settings-container");
     containers.forEach(item => {
-        if(item.dataset.id === dataId){
+        if(item.dataset.id === id){
             item.style.display = "flex"
         }else{
             item.style.display = "none"
@@ -643,6 +651,18 @@ function displaySettings(id){
     })
 }
 
+function showRelevantUi(){ 
+    let container = document.getElementById("list-title-container")
+    console.log(currentPlaylistNode.textContent)
+   
+    if(container.childNodes.length < 1){
+        displaySettings("create")
+    }else if(currentPlaylistNode.textContent === "None Selected"){
+        displaySettings("list")
+    }else{
+        displaySettings("main")
+    }
+}
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(hydrateUi)

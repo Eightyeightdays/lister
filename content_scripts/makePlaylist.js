@@ -86,20 +86,24 @@
         let tempList = tempData[index] //   find playlist with selected id
         ////// ^^^ could be made into its own function for re-use in createPlaylistLink 
         
-        let start;
+        
+        let currentId;
         if(url.search(/=/) === -1){
-            start = url.search(/shorts\//) + 7; // url for YouTube Shorts is different
+             start = url.search(/shorts\//) + 7; // url for YouTube Shorts is different
+            let end = start + 12;
+            currentId = url.substring(start, end) + ",";    
         }else{
-            start = url.search(/=/) + 1;
+            let regex = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(\?\S*)?$/;
+            let matches = url.match(regex)
+            currentId = matches[1] + ",";    
         }
          
-        let end = start + 12;
-        let currentId = url.substring(start, end) + ",";    // COMMAS ADDED TO VIDEO ID HERE
+        
        
         //////////
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
-        alert(currentId.length)
+        
         console.log(tempString)
         tempList.playlistString = tempString;       // add temp string to temp list
 
@@ -143,8 +147,8 @@
         let storage = JSON.parse(localStorage.getItem("allPlaylists"))
         let index = storage.findIndex(list => list.playlistName === name)
         storage.splice(index, 1)
-        console.log(storage)
         localStorage.setItem("allPlaylists", JSON.stringify(storage))
+        localStorage.setItem("currentPlaylist", "None Selected")    ///////
     }
 
     function setPlaylistFavourite(name){
