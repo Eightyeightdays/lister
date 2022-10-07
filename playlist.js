@@ -59,7 +59,6 @@ function listenForClicks() {
             deletePlaylist(playlistName)    // changes textContent to "None Selected"
             document.getElementById("show-more-settings").style.display = "none"
             let container = document.getElementById("list-title-container")
-            console.log(container.children.length)
             if(container.children.length < 1){
                 currentPlaylistNode.textContent = "None Created"
                 displaySettings("create")
@@ -105,7 +104,7 @@ function listenForClicks() {
 function addName(tabs) {
     let title = document.getElementById("playlist-name-input").value;
     let hyphenatedTitle = hyphenate(title)
-    console.log(title)
+
     if(title === ""){
         alert("Playlist must have a name")
         return;
@@ -146,7 +145,6 @@ function addVideo(tabs) {
         if(response.message === "video details fetched"){
             createVideoCard(response.details)
             let order = playlistOrderNode.textContent
-            console.log(order)
             updateTitleOnEdit(Date.now()) // localStorage is also updated by content script
             sortPlaylists(order) // update in real time
         }
@@ -209,7 +207,6 @@ function createVideoCard(video){
 }
 
 function selectPlaylistTitle(id){
-    console.log(id)
     showSelectedList(id)
     setCurrentPlaylist(id)
 }
@@ -260,10 +257,10 @@ function createTitlesList(data, order){
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
 
-    if(order === null){
-        console.log("Order was NULL, set to newest")    // not needed anymore
-        order = "newest"
-    }
+    // if(order === null){
+    //     console.log("Order was NULL, set to newest")    // not needed anymore
+    //     order = "newest"
+    // }
     sortPlaylists(order)
 }
 
@@ -329,7 +326,8 @@ function deleteVideo(id, name){
         let start = oldString.substring(0, stringIndex)
         let end = oldString.substring(stringIndex+12)
         let newString = start + end
-        tempList.playlistString = newString;
+        // tempList.playlistString = newString;
+        tempList.playlistString = removeTrailingComma(newString);   // TESTING
         // update date edited
         updateTitleOnEdit(Date.now())
         tempList.dateEdited = Date.now()
@@ -386,8 +384,6 @@ function deletePlaylist(name){
     removeCards()   // clear playlist preview
     let hyphenatedTitle = hyphenate(name);
     document.getElementById(hyphenatedTitle).remove()  // remove list title
-    // currentPlaylistNode.textContent = "None Selected"   // remove current
-    console.log(currentPlaylistNode.textContent)
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => browser.tabs.sendMessage(response[0].id, {command: "delete playlist", name: name})) 
 }
@@ -548,9 +544,7 @@ function drop(event){
     
     let change = detectPlaylistOrderChange()
     if(change){
-        showUpdateButton()
-    }else{
-        hideUpdateButton()
+        updateListOrder();
     }
 }
 
@@ -574,7 +568,6 @@ function detectPlaylistOrderChange(){
 function updateListOrder(){
     testString = "";    
     checkOrderString = "";  // only clear strings on save
-    // reset indexes on newly sorted list
     let currentPlaylist = currentPlaylistNode.textContent
     let cardList = document.querySelectorAll(".video-card")
     let newList = []
@@ -586,7 +579,6 @@ function updateListOrder(){
         newString += item.dataset.videoid   // 
     })
     
-
     getLocalStorage()
     .then(response =>{
         let index = response.storage.findIndex(list => list.playlistName === currentPlaylist)
@@ -603,14 +595,13 @@ function updateListOrder(){
         }
 
         allLists[index].videos = tempArray  // update video array 
-        allLists[index].playlistString = newString  // update playlist url
-        updateLocalStorage(response.storage)
+        // allLists[index].playlistString = newString  // update playlist url
+        allLists[index].playlistString = removeTrailingComma(newString)  // TESTING
+        updateLocalStorage(response.storage)    // WHY ARE WE NOT UPDATING USING allLists ???
     
     })
     .catch(error => console.log(error))
-    hideUpdateButton()
-
-    
+    // hideUpdateButton()
 }
 
 function updateLocalStorage(data){
@@ -625,15 +616,15 @@ function updateLocalStorage(data){
         .catch(error => console.log(error))
 }
 
-function showUpdateButton(){
-    document.querySelectorAll(".save-changes").forEach(el =>{
-        el.style.display = "block"
-    })
-}
+// function showUpdateButton(){
+//     document.querySelectorAll(".save-changes").forEach(el =>{
+//         el.style.display = "block"
+//     })
+// }
 
-function hideUpdateButton(){
-    document.getElementById("save-changes").style.display = "none"
-}
+// function hideUpdateButton(){
+//     document.getElementById("save-changes").style.display = "none"
+// }
 
 function hyphenate(title){
     let regex = /\s/g;
@@ -653,8 +644,6 @@ function displaySettings(id){
 
 function showRelevantUi(){ 
     let container = document.getElementById("list-title-container")
-    console.log(currentPlaylistNode.textContent)
-   
     if(container.childNodes.length < 1){
         displaySettings("create")
     }else if(currentPlaylistNode.textContent === "None Selected"){
@@ -662,6 +651,10 @@ function showRelevantUi(){
     }else{
         displaySettings("main")
     }
+}
+
+function removeTrailingComma(string){
+    return string.slice(0, -1)
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})

@@ -32,13 +32,13 @@ body{
     position: relative;
     display: flex;
     flex-direction: column;
-    background: red;
+    background: white;
     height: 100%;
     width: 100%;
 }
 
 .playlist-preview{
-    background: rgb(255, 255, 255);
+    background: transparent;
     width: 100%;
     height: 400px;
     padding: 15px;
@@ -47,6 +47,7 @@ body{
     grid-template-rows: max-content;
     overflow-y: scroll;
     gap: 5px;
+  	scrollbar-color:#afaeb1 gold ;   
 }
 
 .playlist-header{
@@ -494,3 +495,4 @@ svg{height: 1em;}
     padding: 0.5em;
     gap: 1em;
 }
+

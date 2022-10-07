@@ -148,7 +148,12 @@
         let index = storage.findIndex(list => list.playlistName === name)
         storage.splice(index, 1)
         localStorage.setItem("allPlaylists", JSON.stringify(storage))
-        localStorage.setItem("currentPlaylist", "None Selected")    ///////
+        if(storage.length < 1){
+            localStorage.setItem("currentPlaylist", "None Created") 
+        }else{
+            localStorage.setItem("currentPlaylist", "None Selected") 
+        }
+        
     }
 
     function setPlaylistFavourite(name){
