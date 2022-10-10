@@ -1,28 +1,27 @@
 const currentPlaylistNode = document.getElementById("current-playlist");
 const playlistOrderNode = document.getElementById("playlistOrder");
-const star = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="star"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>`
+const currentPlaylistLength = document.getElementById("playlist-length-container")
 
 function listenForClicks() {
     document.addEventListener("click", (e) => {
-        // if(currentPlaylistNode.textContent === "None Created" && e.target.id !== "add-playlist-name" && e.target.id !== "playlist-name-input"){
-        //     promptUser()
-        //     return;
-        // }
-
         // console.log(e.target)    // VERIFY
 
         if(e.target.id === "add-playlist-name"){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addName)
-
         }else if (e.target.classList.contains("add-video")) {
-            browser.tabs.query({active: true, currentWindow: true})
-                .then(addVideo)
+            if(currentPlaylistLength.textContent === 50){
+                alert("A playlist can only contain 50 videos maximum")
+                return;
+            }else{
+               browser.tabs.query({active: true, currentWindow: true})
+                .then(addVideo) 
+            }
         }else if(e.target.classList.contains("create-link")){
             browser.tabs.query({active: true, currentWindow: true})
                 .then(createLink)
         }else if(e.target.classList.contains("list-title-card")){
-            let realTitle = e.target.textContent.trim()    // this should display correctly
+            let realTitle = e.target.textContent.trim()    
             selectPlaylistTitle(realTitle)
             currentPlaylistNode.textContent = realTitle;
         }else if(e.target.id === "clear-storage"){
@@ -30,33 +29,39 @@ function listenForClicks() {
             removeCards()
             removePlaylistTitles()
             currentPlaylistNode.textContent = "None Created"
+            displaySettings("create")
         }else if(e.target.id === "arrange-list-titles-forwards"){
             sortPlaylists("forwards");
             playlistOrderNode.textContent = "forwards"
             displaySettings("list")
+            displaySortOrder()
         }else if(e.target.id === "arrange-list-titles-backwards"){
             sortPlaylists("backwards");
             playlistOrderNode.textContent = "backwards"
             displaySettings("list")
+            displaySortOrder()
         }else if(e.target.id === "arrange-list-titles-oldest"){
             sortPlaylists("oldest");
             playlistOrderNode.textContent = "oldest"
             displaySettings("list")
+            displaySortOrder()
         }else if(e.target.id === "arrange-list-titles-newest"){
             sortPlaylists("newest");
             playlistOrderNode.textContent = "newest"
             displaySettings("list")
+            displaySortOrder()
         }else if(e.target.id === "arrange-list-titles-edited"){
             sortPlaylists("edited");
             playlistOrderNode.textContent = "edited"
             displaySettings("list")
+            displaySortOrder()
         }else if(e.target.classList.contains("delete-video")){
             let id = e.target.dataset.id
             let playlistName = currentPlaylistNode.textContent;
             deleteVideo(id, playlistName)
         }else if(e.target.classList.contains("delete-current-playlist")){
             let playlistName = currentPlaylistNode.textContent;
-            deletePlaylist(playlistName)    // changes textContent to "None Selected"
+            deletePlaylist(playlistName)    
             document.getElementById("show-more-settings").style.display = "none"
             let container = document.getElementById("list-title-container")
             if(container.children.length < 1){
@@ -64,6 +69,7 @@ function listenForClicks() {
                 displaySettings("create")
             }else{
                 displaySettings("list")
+                displaySortOrder()
             }
         }else if(e.target.classList.contains("start-playlist")){
             beginPlaylist()
@@ -77,6 +83,9 @@ function listenForClicks() {
                 window.close()
             }, 100)
         }else if(e.target.classList.contains("settings-item")){
+            if(e.target.dataset.id === "list"){
+                displaySortOrder()
+            }
             displaySettings(e.target.dataset.id)
         }else if(e.target.classList.contains("open-button")){
             let box = document.getElementById("show-more-settings");
@@ -102,7 +111,7 @@ function listenForClicks() {
 
 
 function addName(tabs) {
-    let title = document.getElementById("playlist-name-input").value;
+    let title = removeTags(document.getElementById("playlist-name-input").value.trim())
     let hyphenatedTitle = hyphenate(title)
 
     if(title === ""){
@@ -111,7 +120,7 @@ function addName(tabs) {
     }
     if(checkPlaylistName(title)){
         document.getElementById("playlist-name-input").value = ""
-        console.log("EXIT")
+        alert("A playlist with that name already exists")
         return
     }
 
@@ -126,13 +135,15 @@ function addName(tabs) {
         title: title
     })
     .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
-    .then(document.getElementById("playlist-name-input").value = "");   // clear input field
+    .then(document.getElementById("playlist-name-input").value = "");   
     setCurrentPlaylist(title)
     removeCards()
     currentPlaylistNode.textContent = title;
+    currentPlaylistLength.textContent = 0;
     let order = playlistOrderNode.textContent
     sortPlaylists(order)
     displaySettings("list")
+    displaySortOrder()
 }
 
 function addVideo(tabs) {
@@ -147,6 +158,7 @@ function addVideo(tabs) {
             let order = playlistOrderNode.textContent
             updateTitleOnEdit(Date.now()) // localStorage is also updated by content script
             sortPlaylists(order) // update in real time
+            currentPlaylistLength.textContent ++ 
         }
     })
 }
@@ -360,6 +372,7 @@ function getCurrentPlaylist(){
 }
 
 function hydrateUi(){
+    
     getLocalStorage()
     .then(response => {
         if(response.storage){
@@ -399,10 +412,9 @@ input.addEventListener("keypress", function(event) {
 
 function checkPlaylistName(name){
     let allNames = []
-    document.querySelectorAll(".list-title").forEach(list => allNames.push(list.textContent.toUpperCase()))
-
+    document.querySelectorAll(".list-title-card").forEach(list => allNames.push(list.textContent.toUpperCase().trim()))
     if(allNames.includes(name.toUpperCase())){
-        alert("A playlist with that name already exists") // create UI notification
+        console.log("A playlist with that name already exists") 
         return true;
     }else{
         console.log("Playlist name is unique")
@@ -648,6 +660,7 @@ function showRelevantUi(){
         displaySettings("create")
     }else if(currentPlaylistNode.textContent === "None Selected"){
         displaySettings("list")
+        displaySortOrder()
     }else{
         displaySettings("main")
     }
@@ -655,6 +668,25 @@ function showRelevantUi(){
 
 function removeTrailingComma(string){
     return string.slice(0, -1)
+}
+
+function displaySortOrder(){
+    let container = document.querySelector(".playlist-order-container");
+    container.style.display = "flex"
+    setTimeout(()=>{
+        container.style.opacity = "0"
+    }, 1000)
+    setTimeout(()=>{
+        container.style.display = "none"
+        container.style.opacity = "0.7"
+    }, 3000)
+}
+
+function removeTags(string){
+    let lt = /</g; 
+    let gt = />/g;
+    
+    return string.replace(lt, "-").replace(gt, "-")
 }
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})

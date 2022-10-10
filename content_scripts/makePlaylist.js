@@ -51,10 +51,11 @@
         let tempList = tempData[index] ;
         let videoList = tempList.playlistString;
         let fullUrl = baseUrl + videoList;
-        navigator.clipboard.writeText(fullUrl);
+        let final = fullUrl.slice(0, -1);   // added to remove trailing comma
+        navigator.clipboard.writeText(final);
         // alert("Playlist generated and copied to clipboard") 
         console.log("Playlist generated and copied to clipboard")
-        return fullUrl;
+        return final;
     }
     
     function setPlaylistName(name){
@@ -66,7 +67,8 @@
             dateEdited: Date.now(),
             lastAccessed: Date.now(),
             viewCount: 0,
-            favourite: false
+            favourite: false,
+            length: 0
             }
 
         if(!localStorage.getItem("allPlaylists")){                              // if no playlist exists
@@ -85,8 +87,6 @@
         let index = tempData.findIndex(list => list.playlistName === id)
         let tempList = tempData[index] //   find playlist with selected id
         ////// ^^^ could be made into its own function for re-use in createPlaylistLink 
-        
-        
         let currentId;
         if(url.search(/=/) === -1){
              start = url.search(/shorts\//) + 7; // url for YouTube Shorts is different
@@ -97,14 +97,9 @@
             let matches = url.match(regex)
             currentId = matches[1] + ",";    
         }
-         
-        
-       
         //////////
         let tempString = tempList.playlistString;   // take old playlist string
         tempString += currentId;                    // add new video to temp string
-        
-        console.log(tempString)
         tempList.playlistString = tempString;       // add temp string to temp list
 
         let newVideo = {
@@ -116,9 +111,11 @@
             videoUrl: url
         }
 
+        tempList.length ++;
         tempList.dateEdited = Date.now();
         tempList.videos.push(newVideo)  // add video to temp list
         console.log(tempList)   // log updated object
+        console.log("Playlist length is: " + tempList.length + " videos.")
         Object.assign(tempData[index], tempList)    // update the object in the tempData array
         localStorage.setItem("allPlaylists", JSON.stringify(tempData)); // update storage with tempData
         
@@ -177,7 +174,6 @@
             setPlaylistName(message.title)
         }else if(message.command === "add video") {
             let url = window.location.href;
-            console.log(message.id)
             return getVideoDetails(url)    // adding "return" here solved the problem
             .then(details => {
                 updateCurrentList(details, url, message.id)
