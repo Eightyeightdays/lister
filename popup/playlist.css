@@ -183,7 +183,6 @@ a:visited, a{
     grid-template-columns: 120px 1fr max-content;
     align-items: center;
     height: 100%;
-    width: ;
     text-decoration-line: none;
 }
 .video-card:hover{
@@ -321,7 +320,7 @@ svg{height: 1em;}
     border-radius: 5px;
     background: white;
     border: 5px solid black;
-    transition: background 0.5s ease-out;
+    transition: background-color 0.5s ease-out;
 }
 .main-button:hover{
     background: black;
