@@ -504,3 +504,10 @@ svg{height: 1em;}
     gap: 1em;
     padding: 1em;
 }
+.playlist-length-main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5em;
+    gap: 0.5em;
+}

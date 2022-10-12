@@ -17,7 +17,9 @@
             "*://www.youtube.com/embed/*",
             "*://www.youtube.com/pop-up-player/*"
           ],
-        "js": ["makePlaylist.js"]
+        "js": [
+          "makePlaylist.js"
+        ]
       }
     ],
 

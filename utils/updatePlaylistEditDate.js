@@ -1,4 +1,5 @@
 import {currentPlaylistNode} from "../playlist.js"
+import hyphenate from "./hyphenate.js"
 
 export default function updatePlaylistEditDate(date){
     let currentPlaylist = hyphenate(currentPlaylistNode.textContent)

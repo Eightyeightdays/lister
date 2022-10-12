@@ -22,14 +22,23 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
         console.log(info)
         if(info.linkUrl === undefined){
             setTimeout(()=>{
-                browser.tabs.sendMessage(tab.id, {command: "add url", url: info.pageUrl})
+                browser.tabs.sendMessage(tab.id, {
+                    command: "add url", 
+                    url: info.pageUrl
+                })
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
             }, 100)
         }else{
             setTimeout(()=>{
-                browser.tabs.sendMessage(tab.id, {command: "add url", url: info.linkUrl})
-                .then(response => console.log(response))
+                browser.tabs.sendMessage(tab.id, {
+                    command: "add url", 
+                    url: info.linkUrl
+                })
+                .then(response => {
+                    console.log(response)
+                    // need to    
+                })
                 .catch(error => console.log(error))
             }, 100)
         }

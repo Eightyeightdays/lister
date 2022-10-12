@@ -37,7 +37,7 @@ export default function addName(tabs) {
     setCurrentPlaylist(title)
     removeCards()
     currentPlaylistNode.textContent = title;
-    currentPlaylistLength.textContent = 0;
+    currentPlaylistLength.textContent = parseInt(0);
     let order = playlistOrderNode.textContent
     sortPlaylists(order)
     displaySettings("list")

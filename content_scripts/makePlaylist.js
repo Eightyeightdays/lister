@@ -1,12 +1,11 @@
 (function(){
+    const baseUrl = "https://www.youtube.com/watch_videos?video_ids="
 
     if (window.hasRun) {
         return;
     }
     window.hasRun = true;
-    ////////////////////
 
-    // check if localStorage is available on the browser // ^^ Maybe move inside the if statement
     function storageAvailable(type) {
     let storage;
     try {
@@ -37,24 +36,22 @@
     }
     else{
         console.log("Attention, localStorage is not available on this browser!");
-        return; // EXIT IF UNAVAILABLE
+        return; 
     } 
 
-    const baseUrl = "https://www.youtube.com/watch_videos?video_ids=";
-
     function createPlaylistLink(id){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
+        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
         let index = tempData.findIndex(list => list.playlistName === id);
         let tempList = tempData[index] ;
         let videoList = tempList.playlistString;
         let fullUrl = baseUrl + videoList;
-        let final = fullUrl.slice(0, -1);   // added to remove trailing comma
+        let final = fullUrl.slice(0, -1);   // remove trailing comma
         navigator.clipboard.writeText(final);
         console.log("Playlist generated and copied to clipboard")
         return final;
     }
     
-    function setPlaylistName(name){
+    function createPlaylist(name){
         let newList = {
             playlistName: name,
             videos: [],
@@ -77,45 +74,30 @@
         }
     }
 
-    let frog;
-    function updateCurrentList(data, url, id){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); // get storage
-        let index = tempData.findIndex(list => list.playlistName === id)
-        let tempList = tempData[index] //   find playlist with selected id
-        ////// ^^^ could be made into its own function for re-use in createPlaylistLink 
-        let currentId;
-        if(url.search(/=/) === -1){
-             start = url.search(/shorts\//) + 7; // url for YouTube Shorts is different
-            let end = start + 12;
-            currentId = url.substring(start, end) + ",";    
-        }else{
-            let regex = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(\?\S*)?$/;
-            let matches = url.match(regex)
-            currentId = matches[1] + ",";    
-        }
-        
+    function addVideo(data, playlist){
+        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
+        let index = tempData.findIndex(list => list.playlistName === playlist)
+        let tempList = tempData[index] 
         let tempString = tempList.playlistString;   
-        tempString += currentId;                    
+        tempString += data.videoId;                    
         tempList.playlistString = tempString;      
 
         let newVideo = {
-            id: currentId,
+            id: data.videoId,
             title: data.title,
             author: data.author,
             imgUrl: data.imgUrl,
             dateAdded: Date.now(),
-            videoUrl: url
+            videoUrl: data.url
         }
 
         tempList.length ++;
         tempList.dateEdited = Date.now();
         tempList.videos.push(newVideo)  
-        console.log("Playlist length is: " + tempList.length + " videos.")
         Object.assign(tempData[index], tempList)    
         localStorage.setItem("allPlaylists", JSON.stringify(tempData)); 
-        
-        // need to return currentId in order to add it to video card // CHECK
-        return frog = currentId
+
+        return tempList.length
     }
 
     async function getVideoDetails(url){
@@ -127,10 +109,14 @@
         await fetch(jsonUrl)
             .then(response => response.json())
             .then(data =>{
+                let start = data.thumbnail_url.search(/\/vi\//) + 4;
+                let end = start + 11;
+                let videoId = data.thumbnail_url.substring(start, end) + ",";
                 videoDetails.title = data.title;        
                 videoDetails.author = data.author_name;
                 videoDetails.imgUrl = data.thumbnail_url;
-                console.log(data)
+                videoDetails.videoId = videoId;
+                videoDetails.url = url;
             })
         return videoDetails;
     }
@@ -145,14 +131,12 @@
         }else{
             localStorage.setItem("currentPlaylist", "None Selected") 
         }
-        
     }
 
     function setPlaylistFavourite(name){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
         let index = tempData.findIndex(list => list.playlistName === name);
         let tempList = tempData[index] ;
-        // could be made a separate function
 
         if(tempList.favourite === false){
             tempList.favourite = true
@@ -163,31 +147,45 @@
         console.log(`${name} favourite status set to ${tempList.favourite}`)
     }
 
+    function getPlaylistLength(name){
+        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
+        let index = tempData.findIndex(list => list.playlistName === name);
+        let tempList = tempData[index];
+        let length = tempList.length
+
+        return length;
+    }
+
     function handleCommands(message){
-        
+
         if(message.command === "add name"){
-            setPlaylistName(message.title)
+            createPlaylist(message.title)
         }else if(message.command === "add video") {
             let url = window.location.href;
             return getVideoDetails(url)    // adding "return" here solved the problem
             .then(details => {
-                updateCurrentList(details, url, message.id)
-                details.id = frog // add videoId to details object
+                let playlistLength = addVideo(details, message.playlist)
                 return Promise.resolve({
                     message: "video details fetched", 
-                    details: details
+                    details: details,
+                    length: playlistLength
                 })
             })
             .catch(error => console.log(error))
         }else if(message.command === "add url"){
+            let playlist = localStorage.getItem("currentPlaylist")
+            let length = getPlaylistLength(playlist)
+            if(length === 50){
+                alert("A playlist can only contain 50 videos maximum")  // update UI later // CHECK
+                return Promise.reject({message: "A playlist can only contain 50 videos maximum"})
+            }
             return getVideoDetails(message.url)    // adding "return" here solved the problem
             .then(details => {
-                let id = localStorage.getItem("currentPlaylist")
-                updateCurrentList(details, message.url, id)
-                details.id = frog // add videoId to details object
+                let playlistLength = addVideo(details, playlist)
                 return Promise.resolve({
                     message: "video details fetched", 
-                    details: details
+                    details: details,
+                    length: playlistLength      
                 })
             })
             .catch(error => console.log(error))

@@ -4,13 +4,18 @@ export const currentPlaylistLength = document.getElementById("playlist-length-co
 export const playlistPreview = document.getElementById("playlist-preview");
 export let checkOrderString = "";
 
-// import addVideo from "./utils/addVideo.js";
-// import beginPlaylist from "./utils/beginPlaylist.js";
 import hydrateUi from "./utils/hydrateUi.js"
 import listenForClicks from "./utils/listenForClicks.js";
 import handleEnterKeyPress from "./utils/handleEnterKeyPress.js"
 const input = document.getElementById("playlist-name-input");
 input.addEventListener("keypress", handleEnterKeyPress);    // CHECK that this doesn't need an arrow function
+
+browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
+    .then(hydrateUi)
+    .then(listenForClicks)
+    .catch();
+
+
 
 
 // function listenForClicks() {
@@ -653,8 +658,3 @@ input.addEventListener("keypress", handleEnterKeyPress);    // CHECK that this d
 //     let gt = />/g;
 //     return string.replace(lt, "-").replace(gt, "-")
 // }
-
-browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
-    .then(hydrateUi)
-    .then(listenForClicks)
-    .catch();

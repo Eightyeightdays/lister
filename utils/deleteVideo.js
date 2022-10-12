@@ -2,7 +2,7 @@ import getLocalStorage from "./getLocalStorage.js"
 import updatePlaylistEditDate from "./updatePlaylistEditDate.js"
 import sortPlaylists from "./sortPlaylists.js"
 import updateLocalStorage from "./updateLocalStorage.js"
-import { playlistOrderNode } from "../playlist.js"
+import { playlistOrderNode, currentPlaylistLength } from "../playlist.js"
 
 export default function deleteVideo(id, name){
     getLocalStorage()
@@ -22,6 +22,7 @@ export default function deleteVideo(id, name){
         
         updatePlaylistEditDate(Date.now())
         tempList.dateEdited = Date.now()
+        tempList.length --;
         
         let node = document.querySelector('[data-id="' +id+ '"]')
         let parent = node.closest(".video-card")
@@ -31,5 +32,6 @@ export default function deleteVideo(id, name){
         sortPlaylists(order)
     
         updateLocalStorage(allLists)    
+        currentPlaylistLength.textContent = parseInt(tempList.length)
     })
 }

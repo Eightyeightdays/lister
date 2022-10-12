@@ -24,7 +24,7 @@ export default function listenForClicks() {
             browser.tabs.query({active: true, currentWindow: true})
                 .then(addName)
         }else if (e.target.classList.contains("add-video")) {
-            if(currentPlaylistLength.textContent === 50){
+            if(parseInt(currentPlaylistLength.textContent) === 50){
                 alert("A playlist can only contain 50 videos maximum")
                 return;
             }else{

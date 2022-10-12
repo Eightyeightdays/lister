@@ -1,5 +1,6 @@
 import removeCards from "./removeVideoCards.js"
 import createVideoCard from "./createVideoCard.js";
+import { currentPlaylistLength } from "../playlist.js";
 
 export default function showSelectedList(playlistName){
     browser.tabs.query({active: true, currentWindow: true})
@@ -11,6 +12,7 @@ export default function showSelectedList(playlistName){
                 if(list["playlistName"] === playlistName){         
                     list.videos.forEach(video => createVideoCard(video))
                     list.lastAccessed = Date.now(); 
+                    currentPlaylistLength.textContent = parseInt(list.length)
                 }   
             }) 
         }

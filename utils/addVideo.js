@@ -6,7 +6,7 @@ import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode} from "../
 export default function addVideo(tabs) {
     browser.tabs.sendMessage(tabs[0].id, {  // why doesn't this start with a query?
         command: "add video",
-        id: currentPlaylistNode.textContent
+        playlist: currentPlaylistNode.textContent
     })
     .then(response => {
         console.log(response)
@@ -15,7 +15,7 @@ export default function addVideo(tabs) {
             let order = playlistOrderNode.textContent
             updatePlaylistEditDate(Date.now()) // localStorage is also updated by content script
             sortPlaylists(order) 
-            currentPlaylistLength.textContent ++ 
+            currentPlaylistLength.textContent = parseInt(response.length);
         }
     })
 }
