@@ -7,8 +7,8 @@ export const playlistLengthLabel = document.getElementById("playlist-length-labe
 import hydrateUi from "./utils/hydrateUi.js"
 import listenForClicks from "./utils/listenForClicks.js";
 import handleEnterKeyPress from "./utils/handleEnterKeyPress.js"
-const input = document.getElementById("playlist-name-input");
-input.addEventListener("keypress", handleEnterKeyPress);   
+
+document.getElementById("playlist-name-input").addEventListener("keypress", handleEnterKeyPress);   
 
 browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
     .then(hydrateUi)

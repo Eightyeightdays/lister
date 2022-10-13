@@ -2,7 +2,7 @@ function onCreated() {
     if (browser.runtime.lastError) {
         console.log(`Error: ${browser.runtime.lastError}`);
     } else {
-        // console.log("Context menu item created successfully");
+        console.log("Context menu item created successfully");
     }
 }
 
@@ -36,14 +36,12 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
                     url: info.linkUrl
                 })
                 .then(response => {
-                    console.log(response)
-                    // need to    
+                    console.log(response) 
                 })
                 .catch(error => console.log(error))
             }, 100)
         }
         // console.log("Not a valid link")
         return;
-        
     }
 })

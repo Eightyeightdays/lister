@@ -8,7 +8,7 @@ import displaySettings from "./displaySettings.js"
 import displaySortOrder from "./displaySortOrder.js"
 import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
 
-export default function addName(tabs) {
+export default function addName() {
     let title = removeTags(document.getElementById("playlist-name-input").value.trim())
     let hyphenatedTitle = hyphenate(title)
 
@@ -28,12 +28,17 @@ export default function addName(tabs) {
     </div>
     `;
 
-    browser.tabs.sendMessage(tabs[0].id, {
+    browser.tabs.query({active: true, currentWindow: true})
+    .then(response => {
+        console.log(response)
+        browser.tabs.sendMessage(response[0].id, {
         command: "add name",
         title: title
+        })
     })
     .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
-    .then(document.getElementById("playlist-name-input").value = "");   
+    .then(document.getElementById("playlist-name-input").value = ""); 
+
     setCurrentPlaylist(title)
     removeCards()
     currentPlaylistNode.textContent = title;
