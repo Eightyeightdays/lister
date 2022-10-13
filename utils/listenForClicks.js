@@ -14,7 +14,7 @@ import beginPlaylist from "./beginPlaylist.js"
 import setPlaylistFavourite from "./setPlaylistFavourite.js"
 import updateListOrder from "./drag-drop/updateListOrder.js"
 import enableDrag from "./drag-drop/enableDrag.js"
-import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode} from "../playlist.js"
+import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
 
 export default function listenForClicks() {
     document.addEventListener("click", (e) => {
@@ -43,6 +43,8 @@ export default function listenForClicks() {
             removeCards()
             removePlaylistTitles()
             currentPlaylistNode.textContent = "None Created"
+            currentPlaylistLength.textContent = 0;
+            playlistLengthLabel.textContent = "Videos"
             displaySettings("create")
         }else if(e.target.id === "arrange-list-titles-forwards"){
             sortPlaylists("forwards");

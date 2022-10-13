@@ -6,7 +6,7 @@ import removeCards from "./removeVideoCards.js"
 import sortPlaylists from "./sortPlaylists.js"
 import displaySettings from "./displaySettings.js"
 import displaySortOrder from "./displaySortOrder.js"
-import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode} from "../playlist.js"
+import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
 
 export default function addName(tabs) {
     let title = removeTags(document.getElementById("playlist-name-input").value.trim())
@@ -37,7 +37,8 @@ export default function addName(tabs) {
     setCurrentPlaylist(title)
     removeCards()
     currentPlaylistNode.textContent = title;
-    currentPlaylistLength.textContent = parseInt(0);
+    currentPlaylistLength.textContent = 0;
+    playlistLengthLabel.textContent = "Videos"
     let order = playlistOrderNode.textContent
     sortPlaylists(order)
     displaySettings("list")

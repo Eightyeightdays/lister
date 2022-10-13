@@ -2,7 +2,7 @@ import getLocalStorage from "./getLocalStorage.js"
 import updatePlaylistEditDate from "./updatePlaylistEditDate.js"
 import sortPlaylists from "./sortPlaylists.js"
 import updateLocalStorage from "./updateLocalStorage.js"
-import { playlistOrderNode, currentPlaylistLength } from "../playlist.js"
+import { playlistOrderNode, currentPlaylistLength, playlistLengthLabel } from "../playlist.js"
 
 export default function deleteVideo(id, name){
     getLocalStorage()
@@ -33,5 +33,10 @@ export default function deleteVideo(id, name){
     
         updateLocalStorage(allLists)    
         currentPlaylistLength.textContent = parseInt(tempList.length)
+        if(tempList.length === 1){
+            playlistLengthLabel.textContent = "Video"
+        }else{
+            playlistLengthLabel.textContent = "Videos"
+        }
     })
 }

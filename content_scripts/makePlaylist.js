@@ -145,7 +145,6 @@
             tempList.favourite = false
         }
         localStorage.setItem("allPlaylists", JSON.stringify(tempData))
-        console.log(`${name} favourite status set to ${tempList.favourite}`)
     }
 
     function getPlaylistLength(name){
