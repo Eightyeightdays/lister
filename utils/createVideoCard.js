@@ -11,7 +11,7 @@ export default function createVideoCard(video){    //  {title, author, imgUrl, i
 
     let card = `
         <div class="video-card card" id="playlist-video-${videoNumber}" data-videoid=${video.id}>
-            <a href=${video.videoUrl} class="card-link card">
+            <a href=${video.url} class="card-link card">
                 <div class="image-box card">
                     <img class="playlist-preview-image card" src=${video.imgUrl} alt="${video.title}">
                 </div>

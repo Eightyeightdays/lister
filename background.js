@@ -47,14 +47,3 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
         
     }
 })
- 
-// console.log("background")
-
-
-
-
-
-
-
-
-

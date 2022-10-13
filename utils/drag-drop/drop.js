@@ -3,6 +3,7 @@ import updateListOrder from "./updateListOrder.js"
 
 export default function drop(event){
     event.preventDefault()
+
     let dropId;
 
     if(event.target.classList.contains("video-card")){
@@ -17,8 +18,10 @@ export default function drop(event){
     let dragId = event.dataTransfer.getData("text/plain") 
     let card = document.querySelector('[data-id="' + dragId + '"]')   // dragged item
     card.classList.remove("drag-start")
-    container.insertBefore(card, container.children[dropId])    
+    container.insertBefore(card, container.children[dropId]) 
+
     let change = detectPlaylistOrderChange()
+
     if(change){
         updateListOrder();
     }

@@ -79,16 +79,17 @@
         let index = tempData.findIndex(list => list.playlistName === playlist)
         let tempList = tempData[index] 
         let tempString = tempList.playlistString;   
-        tempString += data.videoId;                    
-        tempList.playlistString = tempString;      
+        let newString = data.id + tempString; // play videos by newest first
+                     
+        tempList.playlistString = newString;      
 
         let newVideo = {
-            id: data.videoId,
+            id: data.id,
             title: data.title,
             author: data.author,
             imgUrl: data.imgUrl,
             dateAdded: Date.now(),
-            videoUrl: data.url
+            url: data.url
         }
 
         tempList.length ++;
@@ -115,7 +116,7 @@
                 videoDetails.title = data.title;        
                 videoDetails.author = data.author_name;
                 videoDetails.imgUrl = data.thumbnail_url;
-                videoDetails.videoId = videoId;
+                videoDetails.id = videoId;
                 videoDetails.url = url;
             })
         return videoDetails;

@@ -1,5 +1,3 @@
-import { checkOrderString } from "../../playlist.js";
-
 export default function detectPlaylistOrderChange(){
     let testString = "";
     let cardList = document.querySelectorAll(".video-card")
@@ -7,7 +5,7 @@ export default function detectPlaylistOrderChange(){
         testString += card.dataset.videoid;
     })
    
-    if(checkOrderString === testString){
+    if(window.checkOrderString === testString){
         testString = "";
         return false
     }else{

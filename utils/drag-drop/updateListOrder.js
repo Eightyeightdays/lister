@@ -1,11 +1,9 @@
-import { checkOrderString } from "../../playlist.js";
+
 import getLocalStorage from "../getLocalStorage.js"
 import updateLocalStorage from "../updateLocalStorage.js"
 import {currentPlaylistNode} from "../../playlist.js"
 
 export default function updateListOrder(){
-    testString = "";    
-    checkOrderString = "";  // only clear strings on save
     let currentPlaylist = currentPlaylistNode.textContent
     let cardList = document.querySelectorAll(".video-card")
     let newList = []

@@ -10,7 +10,11 @@ export default function showSelectedList(playlistName){
             removeCards();                                 
             response.storage.forEach(list =>{
                 if(list["playlistName"] === playlistName){         
-                    list.videos.forEach(video => createVideoCard(video))
+                    list.videos.forEach(
+                        video => {
+                            createVideoCard(video)
+                        }
+                    )
                     list.lastAccessed = Date.now(); 
                     currentPlaylistLength.textContent = parseInt(list.length)
                 }   
