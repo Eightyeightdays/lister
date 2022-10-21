@@ -223,7 +223,8 @@
                 return Promise.resolve({
                     message: "Storage retrieved", 
                     storage: JSON.parse(localStorage.getItem("allPlaylists")), 
-                    order: localStorage.getItem("playlistOrder")
+                    order: localStorage.getItem("playlistOrder"),
+                    current: localStorage.getItem("currentPlaylist")
                 })
             }else{
                 localStorage.setItem("playlistOrder", "newest");
@@ -242,9 +243,17 @@
             })
         }else if(message.command === "update localStorage"){
             localStorage.setItem("allPlaylists", message.data)
-            return Promise.resolve({
-                message: "Storage updated"
-            })
+            if(message.order){
+                localStorage.setItem("currentPlaylist", message.current)
+                localStorage.setItem("playlistOrder", message.order)
+                return Promise.resolve({
+                    message: "Data successfully imported"
+                })
+            }else{
+                return Promise.resolve({
+                    message: "Storage updated"
+                })
+            }
         }else if(message.command === "delete playlist"){
             deletePlaylist(message.name)
         }else if(message.command === "set current playlist"){

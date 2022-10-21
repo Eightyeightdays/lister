@@ -265,7 +265,7 @@ svg{height: 1em;}
 
 .settings-menu{
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     /* background:rgb(124, 230, 195); */
     margin: 0.2em;
     gap: 0.5em;
@@ -316,6 +316,20 @@ svg{height: 1em;}
     gap: 0.5em;
 }
 
+.save-settings-container{
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+}
+
+.import-export{
+    height: 4em;
+}
+.import-export:hover{
+    cursor: pointer;
+    fill: gold;
+}
+
 .main-button{
     border-radius: 5px;
     background: white;
@@ -332,6 +346,7 @@ svg{height: 1em;}
 .list-title-main{
     position: relative;
     height: 100%;
+    flex-direction: column;
 }
 
 .list-title-container{
