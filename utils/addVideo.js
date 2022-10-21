@@ -6,7 +6,6 @@ import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistL
 export default function addVideo() {
     browser.tabs.query({active: true, currentWindow: true})
     .then(response => {
-        console.log(response)
         browser.tabs.sendMessage(response[0].id, {  
             command: "add video",
             playlist: currentPlaylistNode.textContent
@@ -25,6 +24,9 @@ export default function addVideo() {
                 }else{
                     playlistLengthLabel.textContent = "Videos"
                 }
+            }else if(response.message === "Unauthorized"){
+                alert("Could not add video. Sorry")
+                window.close();
             }
         })
     })

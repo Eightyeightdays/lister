@@ -107,18 +107,36 @@
         let endUrl = "&format=json";
         let jsonUrl = startUrl + midUrl + endUrl;
         let videoDetails = {}
+        let errorMessage = "";
+
         await fetch(jsonUrl)
-            .then(response => response.json())
-            .then(data =>{
-                let start = data.thumbnail_url.search(/\/vi\//) + 4;
-                let end = start + 11;
-                let videoId = data.thumbnail_url.substring(start, end) + ",";
-                videoDetails.title = data.title;        
-                videoDetails.author = data.author_name;
-                videoDetails.imgUrl = data.thumbnail_url;
-                videoDetails.id = videoId;
-                videoDetails.url = url;
-            })
+        .then(response => {
+            if(response.status != 200){
+                errorMessage = response.statusText
+                // throw new Error(response.statusText)
+            }else{
+                return response.json()
+            }
+        })
+        .then(data =>{
+            if(!data){
+                return
+            }
+            let start = data.thumbnail_url.search(/\/vi\//) + 4;
+            let end = start + 11;
+            let videoId = data.thumbnail_url.substring(start, end) + ",";
+            videoDetails.title = data.title;        
+            videoDetails.author = data.author_name;
+            videoDetails.imgUrl = data.thumbnail_url;
+            videoDetails.id = videoId;
+            videoDetails.url = url;
+        })
+        .catch(error => console.log(error))
+        
+        if(errorMessage.length != 0){
+            videoDetails.error = errorMessage
+        }
+            
         return videoDetails;
     }
    
@@ -163,16 +181,19 @@
             let url = window.location.href;
             return getVideoDetails(url)    // adding "return" here solved the problem
             .then(details => {
-                let playlistLength = addVideo(details, message.playlist)
-                return Promise.resolve({
-                    message: "video details fetched", 
-                    details: details,
-                    length: playlistLength
-                })
+                if(details.error){
+                    return Promise.resolve({message: details.error})
+                }else{
+                    let playlistLength = addVideo(details, message.playlist)
+                    return Promise.resolve({
+                        message: "video details fetched", 
+                        details: details,
+                        length: playlistLength
+                    })
+                }
             })
             .catch(error => console.log(error))
         }else if(message.command === "add url"){
-            console.log(message)
             let playlist = localStorage.getItem("currentPlaylist")
             let length = getPlaylistLength(playlist)
             if(length === 50){
@@ -181,12 +202,17 @@
             }
             return getVideoDetails(message.url)    // adding "return" here solved the problem
             .then(details => {
-                let playlistLength = addVideo(details, playlist)
-                return Promise.resolve({
-                    message: "video details fetched", 
-                    details: details,
-                    length: playlistLength      
-                })
+                if(details.error){
+                    alert("Could not add video. Sorry")
+                    return Promise.reject({message: details.error})
+                }else{
+                    let playlistLength = addVideo(details, playlist)
+                    return Promise.resolve({
+                        message: "video details fetched", 
+                        details: details,
+                        length: playlistLength      
+                    })
+                }
             })
             .catch(error => console.log(error))
         }else if(message.command === "create link"){
@@ -247,5 +273,4 @@
 
     browser.runtime.onMessage.addListener(handleCommands);
 
-    console.log("CONTENT SCRIPT RAN")
 })()

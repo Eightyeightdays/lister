@@ -14,17 +14,10 @@ browser.contextMenus.create({
 }, onCreated);
 
 browser.contextMenus.onClicked.addListener((info) => {
+    // console.log(info)
     if(info.menuItemId === "add"){
         if(info.linkUrl === undefined){
-                browser.tabs.query({active: true, currentWindow: true})
-                .then(response =>{
-                    browser.tabs.sendMessage(response[0].id, {
-                        command: "add url", 
-                        url: info.pageUrl
-                    })
-                    .then(response => console.log(response))
-                    .catch(error => console.log(error))
-                })
+                // throw error
         }else{
                 browser.tabs.query({active: true, currentWindow: true})
                 .then(response =>{
