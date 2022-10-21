@@ -79,7 +79,7 @@
         let index = tempData.findIndex(list => list.playlistName === playlist)
         let tempList = tempData[index] 
         let tempString = tempList.playlistString;   
-        let newString = data.id + tempString; // play videos by newest first
+        let newString = data.id + tempString; // play videos newest first
                      
         tempList.playlistString = newString;      
 
@@ -157,7 +157,6 @@
     }
 
     function handleCommands(message){
-
         if(message.command === "add name"){
             createPlaylist(message.title)
         }else if(message.command === "add video") {
@@ -173,6 +172,7 @@
             })
             .catch(error => console.log(error))
         }else if(message.command === "add url"){
+            console.log(message)
             let playlist = localStorage.getItem("currentPlaylist")
             let length = getPlaylistLength(playlist)
             if(length === 50){
@@ -247,4 +247,5 @@
 
     browser.runtime.onMessage.addListener(handleCommands);
 
+    console.log("CONTENT SCRIPT RAN")
 })()

@@ -13,12 +13,8 @@
       {
         "matches": [
             "*://www.youtube.com/*"],
-          "exclude_matches": [
-            "*://www.youtube.com/embed/*",
-            "*://www.youtube.com/pop-up-player/*"
-          ],
         "js": [
-          "makePlaylist.js"
+          "/content_scripts/content.js"
         ]
       }
     ],

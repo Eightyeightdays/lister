@@ -10,7 +10,5 @@ import handleEnterKeyPress from "./utils/handleEnterKeyPress.js"
 
 document.getElementById("playlist-name-input").addEventListener("keypress", handleEnterKeyPress);   
 
-browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
-    .then(hydrateUi)
-    .then(listenForClicks)
-    .catch();
+hydrateUi()
+listenForClicks()

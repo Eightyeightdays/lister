@@ -23,9 +23,9 @@ export default function addName() {
     }
 
     let element = `
-    <div class="list-title-card" id=${hyphenatedTitle} datecreated=${Date.now()} dateedited=${Date.now()} favourite=false>
-        ${title}
-    </div>
+        <div class="list-title-card" id=${hyphenatedTitle} datecreated=${Date.now()} dateedited=${Date.now()} favourite=false>
+            ${title}
+        </div>
     `;
 
     browser.tabs.query({active: true, currentWindow: true})

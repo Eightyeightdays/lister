@@ -13,35 +13,30 @@ browser.contextMenus.create({
     documentUrlPatterns: ["*://www.youtube.com/*"]
 }, onCreated);
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
-    browser.tabs.executeScript({file: "/content_scripts/makePlaylist.js"})
-    .then(response => console.log(response))
-    .catch(error => console.log(error))
-
+browser.contextMenus.onClicked.addListener((info) => {
     if(info.menuItemId === "add"){
-        console.log(info)
         if(info.linkUrl === undefined){
-            setTimeout(()=>{
-                browser.tabs.sendMessage(tab.id, {
-                    command: "add url", 
-                    url: info.pageUrl
+                browser.tabs.query({active: true, currentWindow: true})
+                .then(response =>{
+                    browser.tabs.sendMessage(response[0].id, {
+                        command: "add url", 
+                        url: info.pageUrl
+                    })
+                    .then(response => console.log(response))
+                    .catch(error => console.log(error))
                 })
-                .then(response => console.log(response))
-                .catch(error => console.log(error))
-            }, 100)
         }else{
-            setTimeout(()=>{
-                browser.tabs.sendMessage(tab.id, {
-                    command: "add url", 
-                    url: info.linkUrl
+                browser.tabs.query({active: true, currentWindow: true})
+                .then(response =>{
+                    browser.tabs.sendMessage(response[0].id, {
+                        command: "add url", 
+                        url: info.linkUrl
+                    })
+                    .then(response => console.log(response))
+                    .catch(error => console.log(error))
                 })
-                .then(response => {
-                    console.log(response) 
-                })
-                .catch(error => console.log(error))
-            }, 100)
         }
-        // console.log("Not a valid link")
+        
         return;
     }
 })
