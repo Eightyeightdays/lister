@@ -16,7 +16,7 @@ export default function addVideo() {
             if(response.message === "video details fetched"){
                 createVideoCard(response.details)
                 let order = playlistOrderNode.textContent
-                updatePlaylistEditDate(Date.now()) // localStorage is also updated by content script
+                updatePlaylistEditDate(Date.now())
                 sortPlaylists(order) 
                 currentPlaylistLength.textContent = parseInt(response.length);
                 if(response.length === 1){
