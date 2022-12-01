@@ -11,12 +11,7 @@ import handleMenuClick from "./handleMenuClick.js"
 import handleSelectPlaylist from "./handleSelectPlaylist.js"
 import handleDrag from "./drag-drop/handleDrag.js"
 import showMoreSettings from "./showMoreSettings.js"
-import exportLocalStorage from "./import_export/exportLocalStorage.js"
 import closeUi from "./closeUi.js"
-// import importLocalStorage from "./import_export/importLocalStorage.js"
-// import hydrateUi from "./hydrateUi.js"
-// import displaySettings from "./displaySettings.js"
-import openImportTab from "./import_export/openImportTab.js"
 
 export default function listenForClicks() {
     document.addEventListener("click", (e) => {
@@ -54,10 +49,6 @@ export default function listenForClicks() {
             handleMenuClick(e)
         }else if(e.target.classList.contains("open-button")){
             showMoreSettings()
-        }else if(e.target.classList.contains("export-json")){
-            exportLocalStorage()
-        }else if(e.target.classList.contains("import-export")){
-            openImportTab();
         }
     })
 

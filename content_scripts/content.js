@@ -1,3 +1,5 @@
+// import setStorage from "../utils/localStorage/setStorage.js";
+
 (function(){
     const baseUrl = "https://www.youtube.com/watch_videos?video_ids="
 
@@ -40,6 +42,7 @@
     } 
 
     function createPlaylistLink(id){
+        // let tempData = JSON.parse(browser.local.storage.get("allPlaylists")); 
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
         let index = tempData.findIndex(list => list.playlistName === id);
         let tempList = tempData[index] ;
@@ -63,6 +66,26 @@
             favourite: false,
             length: 0
         }
+
+        // new storage updates
+        // if(!browser.local.storage.get("allPlaylists")){   
+        //     let allPlaylists = {
+        //         name: "allPlaylists",
+        //         playlists: [newList]
+        //     }   
+        //     let playlistOrder = {
+        //         name: "playlistOrder",
+        //         order: "newest"
+        //     }                        
+        //     // browser.local.storage.set(allPlaylists)    
+        //     // browser.local.storage.set(playlistOrder)      
+        //     setStorage(allPlaylists)
+        //     setStorage(playlistOrder)          
+        // }else{
+        //     let tempStorage = browser.local.storage.get(allPlaylists)  
+        //     tempStorage.playlists.push(newList);                                          
+        //     setStorage()
+        // }
 
         if(!localStorage.getItem("allPlaylists")){                              
             localStorage.setItem("allPlaylists", JSON.stringify([newList]))    
