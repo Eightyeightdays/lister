@@ -8,10 +8,10 @@ import hydrateUi from "./utils/hydrateUi.js"
 import listenForClicks from "./utils/listenForClicks.js";
 import handleEnterKeyPress from "./utils/handleEnterKeyPress.js"
 
-// import Test from "./TEST.js"
+import Test from "./TEST.js"
 
 document.getElementById("playlist-name-input").addEventListener("keypress", handleEnterKeyPress);   
 
-// Test()
+Test()
 hydrateUi()
 listenForClicks()

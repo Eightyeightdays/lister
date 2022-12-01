@@ -42,7 +42,6 @@
     } 
 
     function createPlaylistLink(id){
-        // let tempData = JSON.parse(browser.local.storage.get("allPlaylists")); 
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
         let index = tempData.findIndex(list => list.playlistName === id);
         let tempList = tempData[index] ;
@@ -54,9 +53,9 @@
         return final;
     }
     
-    function createPlaylist(name){
+    function createPlaylist(title){
         let newList = {
-            playlistName: name,
+            playlistName: title,
             videos: [],
             playlistString: "",
             dateCreated: Date.now(),
@@ -68,33 +67,33 @@
         }
 
         // new storage updates
-        // if(!browser.local.storage.get("allPlaylists")){   
-        //     let allPlaylists = {
-        //         name: "allPlaylists",
-        //         playlists: [newList]
-        //     }   
-        //     let playlistOrder = {
-        //         name: "playlistOrder",
-        //         order: "newest"
-        //     }                        
-        //     // browser.local.storage.set(allPlaylists)    
-        //     // browser.local.storage.set(playlistOrder)      
-        //     setStorage(allPlaylists)
-        //     setStorage(playlistOrder)          
-        // }else{
-        //     let tempStorage = browser.local.storage.get(allPlaylists)  
-        //     tempStorage.playlists.push(newList);                                          
-        //     setStorage()
-        // }
-
-        if(!localStorage.getItem("allPlaylists")){                              
-            localStorage.setItem("allPlaylists", JSON.stringify([newList]))    
-            localStorage.setItem("playlistOrder", "newest")                   
+        if(!browser.local.storage.get("allPlaylists")){   
+            let allPlaylists = {
+                name: "allPlaylists",
+                playlists: [newList]
+            }   
+            let playlistOrder = {
+                name: "playlistOrder",
+                order: "newest"
+            }                        
+            browser.storage.local.set(allPlaylists)    
+            browser.storage.local.set(playlistOrder)      
+            // setStorage(allPlaylists)
+            // setStorage(playlistOrder)          
         }else{
-            let tempStorage = JSON.parse(localStorage.getItem("allPlaylists")) 
-            tempStorage.push(newList);                                          
-            localStorage.setItem("allPlaylists", JSON.stringify(tempStorage))   
+            let tempStorage = browser.storage.local.get(allPlaylists)  
+            tempStorage.playlists.push(newList);                                          
+            // setStorage()
         }
+
+        // if(!localStorage.getItem("allPlaylists")){                              
+        //     localStorage.setItem("allPlaylists", JSON.stringify([newList]))    
+        //     localStorage.setItem("playlistOrder", "newest")                   
+        // }else{
+        //     let tempStorage = JSON.parse(localStorage.getItem("allPlaylists")) 
+        //     tempStorage.push(newList);                                          
+        //     localStorage.setItem("allPlaylists", JSON.stringify(tempStorage))   
+        // }
     }
 
     function addVideo(data, playlist){
@@ -198,7 +197,7 @@
     }
 
     function handleCommands(message){
-        if(message.command === "add name"){
+        if(message.command === "create playlist"){
             createPlaylist(message.title)
         }else if(message.command === "add video") {
             let url = window.location.href;

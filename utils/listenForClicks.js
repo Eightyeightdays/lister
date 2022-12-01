@@ -1,4 +1,4 @@
-import addName from "./createPlaylist.js"
+import createPlaylist from "./createPlaylist.js"
 import createLink from "./createLinkToPlaylist.js"
 import beginPlaylist from "./beginPlaylist.js"
 import setPlaylistFavourite from "./setPlaylistFavourite.js"
@@ -13,10 +13,11 @@ import handleDrag from "./drag-drop/handleDrag.js"
 import showMoreSettings from "./showMoreSettings.js"
 import closeUi from "./closeUi.js"
 
+
 export default function listenForClicks() {
     document.addEventListener("click", (e) => {
         if(e.target.id === "add-playlist-name"){
-            addName()
+            createPlaylist()
         }else if (e.target.classList.contains("add-video")) {
             handleAddVideo()
         }else if(e.target.classList.contains("create-link")){

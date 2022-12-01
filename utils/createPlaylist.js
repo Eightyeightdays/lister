@@ -8,7 +8,7 @@ import displaySettings from "./displaySettings.js"
 import displaySortOrder from "./displaySortOrder.js"
 import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
 
-export default function addName() {
+export default function createPlaylist() {
     let title = removeTags(document.getElementById("playlist-name-input").value.trim())
     let hyphenatedTitle = hyphenate(title)
 
@@ -28,16 +28,44 @@ export default function addName() {
         </div>
     `;
 
-    browser.tabs.query({active: true, currentWindow: true})
-    .then(response => {
-        console.log(response)
-        browser.tabs.sendMessage(response[0].id, {
-        command: "add name",
-        title: title
-        })
-    })
-    .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
-    .then(document.getElementById("playlist-name-input").value = ""); 
+    // TESTING
+    let newList = {
+        playlistName: title,
+        videos: [],
+        playlistString: "",
+        dateCreated: Date.now(),
+        dateEdited: Date.now(),
+        lastAccessed: Date.now(),
+        viewCount: 0,
+        favourite: false,
+        length: 0
+    }
+    let allPlaylists = {
+        name: "allPlaylists",
+        playlists: [newList]
+    }   
+           
+    function setItem() {
+        console.log("STORAGE UPDATED!!!");
+    }
+
+    function onError(error) {
+        console.log(error)
+    }
+
+    browser.storage.local.set(allPlaylists).then(setItem, onError)
+    // END TEST
+
+    // browser.tabs.query({active: true, currentWindow: true})
+    // .then(response => {
+    //     console.log(response)
+    //     browser.tabs.sendMessage(response[0].id, {
+    //     command: "create playlist",
+    //     title: title
+    //     })
+    // })
+    // .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
+    // .then(document.getElementById("playlist-name-input").value = ""); 
 
     setCurrentPlaylist(title)
     removeCards()
