@@ -265,8 +265,7 @@ svg{height: 1em;}
 
 .settings-menu{
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    /* background:rgb(124, 230, 195); */
+    grid-template-columns: repeat(5, 1fr);
     margin: 0.2em;
     gap: 0.5em;
 }
@@ -290,7 +289,6 @@ svg{height: 1em;}
 
 .settings-display{
     height: 100px;
-    /* background: greenyellow; */
 }
 
 .settings-container{
@@ -525,4 +523,15 @@ svg{height: 1em;}
     align-items: center;
     margin-top: 0.5em;
     gap: 0.5em;
+}
+
+.import-popup{
+    all: revert;
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    height: 150px !important;
+    width: 300px !important;
+    background: red !important;
+    z-index: 99;
 }
