@@ -1,3 +1,4 @@
+import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
 import removeTags from "./removeTags.js"
 import hyphenate from "./hyphenate.js"
 import checkPlaylistName from "./checkPlaylistName.js"
@@ -6,7 +7,9 @@ import removeCards from "./removeVideoCards.js"
 import sortPlaylists from "./sortPlaylists.js"
 import displaySettings from "./displaySettings.js"
 import displaySortOrder from "./displaySortOrder.js"
-import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
+import setStorage from "./localStorage/setStorage.js"
+import getStorage from "./localStorage/getStorage.js"
+import setPlaylistOrder from "./localStorage/setPlaylistOrder.js"
 
 export default function createPlaylist() {
     let title = removeTags(document.getElementById("playlist-name-input").value.trim())
@@ -36,24 +39,50 @@ export default function createPlaylist() {
         dateCreated: Date.now(),
         dateEdited: Date.now(),
         lastAccessed: Date.now(),
-        viewCount: 0,
         favourite: false,
         length: 0
     }
+
     let allPlaylists = {
-        name: "allPlaylists",
         playlists: [newList]
     }   
-           
-    function setItem() {
-        console.log("STORAGE UPDATED!!!");
-    }
+    
+    // gets and sets storage - could be abstracted
+    browser.storage.local.get()
+    .then(data =>{
+        console.log(data)
+        if(!data.playlists){
+            console.log("No playlists in storage")
+            setStorage(allPlaylists);
+            setPlaylistOrder("newest");
+        }else{
+            let tempData = {
+                playlists: [...data.playlists]
+            }
+            tempData.playlists.push(newList)
+            setStorage(tempData)
+            console.log(tempData)
+        }
+    })
+    .catch(err => console.log(err))
 
-    function onError(error) {
-        console.log(error)
-    }
+    document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element)
+    document.getElementById("playlist-name-input").value = ""
+    // END TEST
 
-    browser.storage.local.set(allPlaylists).then(setItem, onError)
+    // if(!localStorage.getItem("allPlaylists")){                              
+    //     localStorage.setItem("allPlaylists", JSON.stringify([newList]))    
+    //     localStorage.setItem("playlistOrder", "newest")                   
+    // }else{
+    //     let tempStorage = JSON.parse(localStorage.getItem("allPlaylists")) 
+    //     tempStorage.push(newList);                                          
+    //     localStorage.setItem("allPlaylists", JSON.stringify(tempStorage))   
+    // }
+    // setStorage(allPlaylists)
+    // getStorage(allPlaylists)
+    
+    // document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element)
+    // document.getElementById("playlist-name-input").value = ""
     // END TEST
 
     // browser.tabs.query({active: true, currentWindow: true})
@@ -66,6 +95,7 @@ export default function createPlaylist() {
     // })
     // .then(document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element))
     // .then(document.getElementById("playlist-name-input").value = ""); 
+    
 
     setCurrentPlaylist(title)
     removeCards()
