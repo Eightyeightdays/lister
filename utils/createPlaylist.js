@@ -8,7 +8,6 @@ import sortPlaylists from "./sortPlaylists.js"
 import displaySettings from "./displaySettings.js"
 import displaySortOrder from "./displaySortOrder.js"
 import setStorage from "./localStorage/setStorage.js"
-import getStorage from "./localStorage/getStorage.js"
 import setPlaylistOrder from "./localStorage/setPlaylistOrder.js"
 
 export default function createPlaylist() {
@@ -43,25 +42,17 @@ export default function createPlaylist() {
         length: 0
     }
 
-    let allPlaylists = {
-        playlists: [newList]
-    }   
-    
     // gets and sets storage - could be abstracted
     browser.storage.local.get()
     .then(data =>{
         console.log(data)
         if(!data.playlists){
-            console.log("No playlists in storage")
-            setStorage(allPlaylists);
+            console.log("No playlists were in storage")
+            setStorage({playlists: [newList]});
             setPlaylistOrder("newest");
         }else{
-            let tempData = {
-                playlists: [...data.playlists]
-            }
-            tempData.playlists.push(newList)
-            setStorage(tempData)
-            console.log(tempData)
+            data.playlists.push(newList)
+            setStorage({playlists: [...data.playlists]})
         }
     })
     .catch(err => console.log(err))

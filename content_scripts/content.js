@@ -78,71 +78,71 @@
     //     }
     // }
 
-    function addVideo(data, playlist){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
-        let index = tempData.findIndex(list => list.playlistName === playlist)
-        let tempList = tempData[index] 
-        let tempString = tempList.playlistString;   
-        let newString = data.id + tempString; // play videos newest first
+    // function addVideo(data, playlist){
+    //     let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
+    //     let index = tempData.findIndex(list => list.playlistName === playlist)
+    //     let tempList = tempData[index] 
+    //     let tempString = tempList.playlistString;   
+    //     let newString = data.id + tempString; // play videos newest first
                      
-        tempList.playlistString = newString;      
+    //     tempList.playlistString = newString;      
 
-        let newVideo = {
-            id: data.id,
-            title: data.title,
-            author: data.author,
-            imgUrl: data.imgUrl,
-            dateAdded: Date.now(),
-            url: data.url
-        }
+    //     let newVideo = {
+    //         id: data.id,
+    //         title: data.title,
+    //         author: data.author,
+    //         imgUrl: data.imgUrl,
+    //         dateAdded: Date.now(),
+    //         url: data.url
+    //     }
 
-        tempList.length ++;
-        tempList.dateEdited = Date.now();
-        tempList.videos.push(newVideo)  
-        Object.assign(tempData[index], tempList)    
-        localStorage.setItem("allPlaylists", JSON.stringify(tempData)); 
+    //     tempList.length ++;
+    //     tempList.dateEdited = Date.now();
+    //     tempList.videos.push(newVideo)  
+    //     Object.assign(tempData[index], tempList)    
+    //     localStorage.setItem("allPlaylists", JSON.stringify(tempData)); 
 
-        return tempList.length
-    }
+    //     return tempList.length
+    // }
 
-    async function getVideoDetails(url){
-        let startUrl = "https://www.youtube.com/oembed?url=";
-        let midUrl = url;
-        let endUrl = "&format=json";
-        let jsonUrl = startUrl + midUrl + endUrl;
-        let videoDetails = {}
-        let errorMessage = "";
+    // async function getVideoDetails(url){
+    //     let startUrl = "https://www.youtube.com/oembed?url=";
+    //     let midUrl = url;
+    //     let endUrl = "&format=json";
+    //     let jsonUrl = startUrl + midUrl + endUrl;
+    //     let videoDetails = {}
+    //     let errorMessage = "";
 
-        await fetch(jsonUrl)
-        .then(response => {
-            if(response.status != 200){
-                errorMessage = response.statusText
-                // throw new Error(response.statusText)
-            }else{
-                return response.json()
-            }
-        })
-        .then(data =>{
-            if(!data){
-                return
-            }
-            let start = data.thumbnail_url.search(/\/vi\//) + 4;
-            let end = start + 11;
-            let videoId = data.thumbnail_url.substring(start, end) + ",";
-            videoDetails.title = data.title;        
-            videoDetails.author = data.author_name;
-            videoDetails.imgUrl = data.thumbnail_url;
-            videoDetails.id = videoId;
-            videoDetails.url = url;
-        })
-        .catch(error => console.log(error))
+    //     await fetch(jsonUrl)
+    //     .then(response => {
+    //         if(response.status != 200){
+    //             errorMessage = response.statusText
+    //             // throw new Error(response.statusText)
+    //         }else{
+    //             return response.json()
+    //         }
+    //     })
+    //     .then(data =>{
+    //         if(!data){
+    //             return
+    //         }
+    //         let start = data.thumbnail_url.search(/\/vi\//) + 4;
+    //         let end = start + 11;
+    //         let videoId = data.thumbnail_url.substring(start, end) + ",";
+    //         videoDetails.title = data.title;        
+    //         videoDetails.author = data.author_name;
+    //         videoDetails.imgUrl = data.thumbnail_url;
+    //         videoDetails.id = videoId;
+    //         videoDetails.url = url;
+    //     })
+    //     .catch(error => console.log(error))
         
-        if(errorMessage.length != 0){
-            videoDetails.error = errorMessage
-        }
+    //     if(errorMessage.length != 0){
+    //         videoDetails.error = errorMessage
+    //     }
             
-        return videoDetails;
-    }
+    //     return videoDetails;
+    // }
    
     function deletePlaylist(name){  
         let storage = JSON.parse(localStorage.getItem("allPlaylists"))
