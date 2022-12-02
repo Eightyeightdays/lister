@@ -1,26 +1,24 @@
+import setStorage from "./setStorage.js"
+
 export default function addVideoToStorage(details, playlistName){
-    let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
-        let index = tempData.findIndex(list => list.playlistName === playlistName)
-        let tempList = tempData[index] 
-        let tempString = tempList.playlistString;   
-        let newString = details.id + tempString; // play videos newest first
-                     
-        tempList.playlistString = newString;      
+    details.dateAdded = Date.now()
+    browser.storage.local.get()
+    .then(data =>{
+        let index = data.playlists.findIndex(list => list.playlistName === playlistName)
+        let currentPlaylist = data.playlists[index]
+        let currentPlaylistString = currentPlaylist.playlistString
+        let newPlaylistString = data.id + currentPlaylistString // newest video first
+        
+        currentPlaylist.playlistString = newPlaylistString;
+        currentPlaylist.length ++;
+        currentPlaylist.dateEdited = Date.now();
+        currentPlaylist.videos.push(details)  
+        
+        setStorage({playlists:data.playlists})
 
-        let newVideo = {
-            id: details.id,
-            title: details.title,
-            author: details.author,
-            imgUrl: details.imgUrl,
-            dateAdded: Date.now(),
-            url: details.url
-        }
+        // console.log(currentPlaylist.videos)
+        // console.log(currentPlaylist)
+        // console.log(data)
+    })
 
-        tempList.length ++;
-        tempList.dateEdited = Date.now();
-        tempList.videos.push(newVideo)  
-        Object.assign(tempData[index], tempList)    
-        localStorage.setItem("allPlaylists", JSON.stringify(tempData)); 
-
-        return tempList.length  // make a separate function to return current playlist length
 }

@@ -1,6 +1,8 @@
 import { playlistPreview } from "../playlist.js";
 
 export default function createVideoCard(video){  
+    console.log(video)
+    console.log(Object.keys(video))
     let card = `
         <div id=${video.id} class="video-card card" data-videoid=${video.id}>
             <a href=${video.url} class="card-link card">
