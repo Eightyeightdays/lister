@@ -1,8 +1,6 @@
 import { playlistPreview } from "../playlist.js";
 
 export default function createVideoCard(video){  
-    console.log(video)
-    console.log(Object.keys(video))
     let card = `
         <div id=${video.id} class="video-card card" data-videoid=${video.id}>
             <a href=${video.url} class="card-link card">
@@ -18,5 +16,5 @@ export default function createVideoCard(video){
             <div class="handle playlist-handle"><div class="handle inner-handle"></div></div>
         </div>`;
     
-    playlistPreview.insertAdjacentHTML("afterbegin", card); // insert video card
+    playlistPreview.insertAdjacentHTML("afterbegin", card); 
 }

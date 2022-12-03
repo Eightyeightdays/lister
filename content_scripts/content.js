@@ -144,17 +144,17 @@
     //     return videoDetails;
     // }
    
-    function deletePlaylist(name){  
-        let storage = JSON.parse(localStorage.getItem("allPlaylists"))
-        let index = storage.findIndex(list => list.playlistName === name)
-        storage.splice(index, 1)
-        localStorage.setItem("allPlaylists", JSON.stringify(storage))
-        if(storage.length < 1){
-            localStorage.setItem("currentPlaylist", "None Created") 
-        }else{
-            localStorage.setItem("currentPlaylist", "None Selected") 
-        }
-    }
+    // function deletePlaylist(name){  
+    //     let storage = JSON.parse(localStorage.getItem("allPlaylists"))
+    //     let index = storage.findIndex(list => list.playlistName === name)
+    //     storage.splice(index, 1)
+    //     localStorage.setItem("allPlaylists", JSON.stringify(storage))
+    //     if(storage.length < 1){
+    //         localStorage.setItem("currentPlaylist", "None Created") 
+    //     }else{
+    //         localStorage.setItem("currentPlaylist", "None Selected") 
+    //     }
+    // }
 
     function setPlaylistFavourite(name){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
@@ -179,25 +179,7 @@
     }
 
     function handleCommands(message){
-        if(message.command === "create playlist"){
-            createPlaylist(message.title)
-        }else if(message.command === "add video") {
-            let url = window.location.href;
-            return getVideoDetails(url)    // adding "return" here solved the problem
-            .then(details => {
-                if(details.error){
-                    return Promise.resolve({message: details.error})
-                }else{
-                    let playlistLength = addVideo(details, message.playlist)
-                    return Promise.resolve({
-                        message: "video details fetched", 
-                        details: details,
-                        length: playlistLength
-                    })
-                }
-            })
-            .catch(error => console.log(error))
-        }else if(message.command === "add url"){
+       if(message.command === "add url"){
             let playlist = localStorage.getItem("currentPlaylist")
             let length = getPlaylistLength(playlist)
             if(length === 50){
