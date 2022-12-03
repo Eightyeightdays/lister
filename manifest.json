@@ -29,8 +29,8 @@
 
     "background": {
       "scripts": [
-          "background.js"
-      ]
+        "background.js"
+    ]
     }
   
   }

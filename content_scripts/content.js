@@ -169,14 +169,14 @@
     //     localStorage.setItem("allPlaylists", JSON.stringify(tempData))
     // }
 
-    function getPlaylistLength(name){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
-        let index = tempData.findIndex(list => list.playlistName === name);
-        let tempList = tempData[index];
-        let length = tempList.length
+    // function getPlaylistLength(name){
+    //     let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
+    //     let index = tempData.findIndex(list => list.playlistName === name);
+    //     let tempList = tempData[index];
+    //     let length = tempList.length
 
-        return length;
-    }
+    //     return length;
+    // }
 
     function handleCommands(message){
        if(message.command === "add url"){

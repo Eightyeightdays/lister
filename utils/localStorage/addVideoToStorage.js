@@ -15,10 +15,6 @@ export default function addVideoToStorage(details, playlistName){
         currentPlaylist.videos.push(details)  
         
         setStorage({playlists:data.playlists})
-
-        // console.log(currentPlaylist.videos)
-        // console.log(currentPlaylist)
-        // console.log(data)
     })
 
 }

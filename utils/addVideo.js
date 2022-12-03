@@ -8,6 +8,7 @@ import getPlaylistLength from "./localStorage/getPlaylistLength.js"
 
 export default async function addVideo() { 
     let order = playlistOrderNode.textContent
+    console.log(`Order in addVideo is ${order}`)
     let playlistName = currentPlaylistNode.textContent
     let playlistLength = await getPlaylistLength(playlistName)  
     let response = await browser.tabs.query({active: true, currentWindow: true})
