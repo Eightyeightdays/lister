@@ -1,18 +1,36 @@
+import { currentPlaylistLength, playlistLengthLabel, currentPlaylistNode } from "../../playlist.js";
 import setStorage from "./setStorage.js"
+import removeCards from "../removeVideoCards.js"
+import hyphenate from "../hyphenate.js"
+import setCurrentPlaylist from "./setCurrentPlaylist.js";
+import displaySettings from "../displaySettings.js";
+import displaySortOrder from "../displaySortOrder.js";
 
-export default function deletePlaylist(name){  
+export default function deletePlaylist(){  
+    document.getElementById("show-more-settings").style.display = "none"
+    let playlistName = currentPlaylistNode.textContent;
+    let container = document.getElementById("list-title-container")
+
     browser.storage.local.get()
     .then(data =>{
-        let index = data.playlists.findIndex(list => list.playlistName === name)
+        let index = data.playlists.findIndex(list => list.playlistName === playlistName)
         data.playlists.splice(index, 1)
         setStorage({playlists: data.playlists})
-        console.log(`The ${name} playlist was deleted!`)
+        console.log(`The ${playlistName} playlist was deleted!`)
 
-        // need to create setCurrentPlaylist function
-        if(data.playlists.length < 1){
-            // "None Created"
+        removeCards()   
+        let hyphenatedTitle = hyphenate(playlistName);
+        document.getElementById(hyphenatedTitle).remove() 
+        currentPlaylistLength.textContent = 0;
+        playlistLengthLabel.textContent = "Videos"
+
+        if(container.children.length < 1){
+            setCurrentPlaylist("None Created")
+            displaySettings("create")
         }else{
-           //"None Selected"
-        }
+            setCurrentPlaylist("None Selected")
+            displaySettings("list")
+            displaySortOrder()
+        }  
     })
 }

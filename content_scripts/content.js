@@ -156,18 +156,18 @@
     //     }
     // }
 
-    function setPlaylistFavourite(name){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
-        let index = tempData.findIndex(list => list.playlistName === name);
-        let tempList = tempData[index] ;
+    // function setPlaylistFavourite(name){
+    //     let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
+    //     let index = tempData.findIndex(list => list.playlistName === name);
+    //     let tempList = tempData[index] ;
 
-        if(tempList.favourite === false){
-            tempList.favourite = true
-        }else{
-            tempList.favourite = false
-        }
-        localStorage.setItem("allPlaylists", JSON.stringify(tempData))
-    }
+    //     if(tempList.favourite === false){
+    //         tempList.favourite = true
+    //     }else{
+    //         tempList.favourite = false
+    //     }
+    //     localStorage.setItem("allPlaylists", JSON.stringify(tempData))
+    // }
 
     function getPlaylistLength(name){
         let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
@@ -240,8 +240,6 @@
                     message: "Storage updated"
                 })
             }
-        }else if(message.command === "delete playlist"){
-            deletePlaylist(message.name)
         }else if(message.command === "set current playlist"){
             localStorage.setItem("currentPlaylist", message.playlistName)
             return Promise.resolve({
@@ -257,11 +255,6 @@
             localStorage.setItem("playlistOrder", message.order)
             return Promise.resolve({
                 message: `playlist order set to ${message.order}`
-            })
-        }else if(message.command === "favourite"){
-            setPlaylistFavourite(message.list)
-            return Promise.resolve({
-                message: `favourite status set for ${message.list}`
             })
         }
     }

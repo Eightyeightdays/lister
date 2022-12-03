@@ -1,18 +1,17 @@
 import createPlaylist from "./createPlaylist.js"
 import createLink from "./createLinkToPlaylist.js"
 import beginPlaylist from "./beginPlaylist.js"
-import setPlaylistFavourite from "./setPlaylistFavourite.js"
 import handleSort from "./handleSort.js"
 import handleClear from "./handleClear.js"
 import handleAddVideo from "./handleAddVideo.js"
 import handleDeleteVideo from "./handleDeleteVideo.js"
-import handleDeletePlaylist from "./handleDeletePlaylist.js"
 import handleMenuClick from "./handleMenuClick.js"
 import handleSelectPlaylist from "./handleSelectPlaylist.js"
 import handleDrag from "./drag-drop/handleDrag.js"
 import showMoreSettings from "./showMoreSettings.js"
 import closeUi from "./closeUi.js"
-
+import deletePlaylist from "./localStorage/deletePlaylist.js"
+import setFavourite from "./localStorage/setFavourite.js"
 
 export default function listenForClicks() {
     document.addEventListener("click", (e) => {
@@ -39,11 +38,11 @@ export default function listenForClicks() {
         }else if(e.target.classList.contains("delete-video")){
             handleDeleteVideo(e)
         }else if(e.target.classList.contains("delete-current-playlist")){
-            handleDeletePlaylist()
+            deletePlaylist()
         }else if(e.target.classList.contains("start-playlist")){
             beginPlaylist()
         }else if(e.target.classList.contains("add-favourite")){
-            setPlaylistFavourite()
+            setFavourite()
         }else if(e.target.classList.contains("card")){  
             closeUi()
         }else if(e.target.classList.contains("settings-item")){
