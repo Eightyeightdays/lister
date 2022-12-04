@@ -77,22 +77,6 @@
         }else if(message.command === "create link"){
             var url = createPlaylistLink(message.id)
             return Promise.resolve({url: url})
-        }else if(message.command === "set current playlist"){
-            localStorage.setItem("currentPlaylist", message.playlistName)
-            return Promise.resolve({
-                message: `current playlist set to ${message.playlistName}`
-            })
-        }else if(message.command === "return currentPlaylist"){
-            let current = localStorage.getItem("currentPlaylist")
-            return Promise.resolve({
-                message: "current playlist retrieved", 
-                current: current
-            })
-        }else if(message.command === "set sorting order"){
-            localStorage.setItem("playlistOrder", message.order)
-            return Promise.resolve({
-                message: `playlist order set to ${message.order}`
-            })
         }
     }
 

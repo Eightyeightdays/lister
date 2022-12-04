@@ -36,5 +36,7 @@ export default function updateListOrderNew(){   // add async/await for storage?
     
     playlistsClone[index].videos = tempArray  // update video array 
     playlistsClone[index].playlistString = newString  // update playlist url
-    setStorage({playlists}) // WHY ARE WE NOT UPDATING USING playlistsClone ???
+    // setStorage({playlists: playlists}) // WHY ARE WE NOT UPDATING USING playlistsClone ???
+    setStorage({playlists: playlistsClone}) // WHY ARE WE NOT UPDATING USING playlistsClone ???
+
 }
