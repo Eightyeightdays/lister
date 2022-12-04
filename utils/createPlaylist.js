@@ -2,7 +2,7 @@ import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistL
 import removeTags from "./removeTags.js"
 import hyphenate from "./hyphenate.js"
 import checkPlaylistName from "./checkPlaylistName.js"
-import setCurrentPlaylist from "./setCurrentPlaylist.js"
+import setCurrentPlaylist from "./localStorage/setCurrentPlaylist.js"
 import removeCards from "./removeVideoCards.js"
 import sortPlaylists from "./sortPlaylists.js"
 import displaySettings from "./displaySettings.js"

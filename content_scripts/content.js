@@ -1,5 +1,3 @@
-// import setStorage from "../utils/localStorage/setStorage.js";
-
 (function(){
     const baseUrl = "https://www.youtube.com/watch_videos?video_ids="
 
@@ -179,7 +177,7 @@
     // }
 
     function handleCommands(message){
-       if(message.command === "add url"){
+        if(message.command === "add url"){
             let playlist = localStorage.getItem("currentPlaylist")
             let length = getPlaylistLength(playlist)
             if(length === 50){
@@ -214,7 +212,7 @@
                 })
             }else{
                 localStorage.setItem("playlistOrder", "newest");
-                localStorage.setItem("currentPlaylist", "None Created")
+                // localStorage.setItem("currentPlaylist", "None Created")
                 return Promise.resolve({
                     message: "Storage is empty, order set to newest, currentPlaylist set to None", 
                     order: localStorage.getItem("playlistOrder")

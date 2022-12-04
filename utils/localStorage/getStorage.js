@@ -1,10 +1,7 @@
-export default function getStorage(){
-    function confirmStorageFetch(data){
-        console.log(data)
-    }
-    function onError(err){
-        console.log(err)
-    }
-    browser.storage.local.get().then(confirmStorageFetch, onError)
+export default async function getStorage(){
+    const storage = await browser.storage.local.get()
+    console.log("Storage: ")
+    console.log(storage)
+    return storage
 }
     
