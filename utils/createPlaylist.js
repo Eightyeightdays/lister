@@ -9,7 +9,7 @@ import displaySettings from "./displaySettings.js"
 import displaySortOrder from "./displaySortOrder.js"
 import setStorage from "./localStorage/setStorage.js"
 
-export default function createPlaylist() {
+export default async function createPlaylist() {
     let title = removeTags(document.getElementById("playlist-name-input").value.trim())
     let hyphenatedTitle = hyphenate(title)
 
@@ -40,18 +40,16 @@ export default function createPlaylist() {
         length: 0
     }
 
-    browser.storage.local.get()
-    .then(data =>{
-        if(!data.playlists){
-            console.log("No playlists were in storage")
-            setStorage({playlists: [newList]});
-        }else{
-            data.playlists.push(newList)
-            setStorage({playlists: [...data.playlists]})
-        }
-    })
-    .catch(err => console.log(err))
-
+    let data = await browser.storage.local.get()
+    
+    if(!data.playlists){
+        console.log("No playlists were in storage")
+        setStorage({playlists: [newList]});
+    }else{
+        data.playlists.push(newList)
+        setStorage({playlists: [...data.playlists]})
+    }
+   
     document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element)
     document.getElementById("playlist-name-input").value = ""
     currentPlaylistNode.textContent = title;
