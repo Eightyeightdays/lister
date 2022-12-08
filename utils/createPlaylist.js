@@ -17,6 +17,7 @@ export default async function createPlaylist() {
         alert("Playlist must have a name")
         return;
     }
+    
     if(checkPlaylistName(title)){
         document.getElementById("playlist-name-input").value = ""
         alert("A playlist with that name already exists")

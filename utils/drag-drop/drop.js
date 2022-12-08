@@ -1,6 +1,5 @@
 import detectPlaylistOrderChange from "./detectPlaylistOrderChange.js"
-// import updateListOrder from "./updateListOrder.js"
-import updateListOrderNew from "./updateListOrder-new.js";
+import updateListOrder from "./updateListOrder.js"
 
 export default function drop(event){
     event.preventDefault()
@@ -24,6 +23,6 @@ export default function drop(event){
     let change = detectPlaylistOrderChange()
 
     if(change){
-        updateListOrderNew();
+        updateListOrder();
     }
 }

@@ -14,10 +14,9 @@ browser.contextMenus.create({
 }, onCreated);
 
 browser.contextMenus.onClicked.addListener((info) => {
-    // console.log(info)
     if(info.menuItemId === "add"){
         if(info.linkUrl === undefined){
-                // throw error
+                console.log("An error occurred trying to add the video URL")
         }else{
                 browser.tabs.query({active: true, currentWindow: true})
                 .then(response =>{
