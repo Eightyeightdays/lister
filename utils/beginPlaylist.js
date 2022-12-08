@@ -1,11 +1,15 @@
-import createLink from "./createLinkToPlaylist.js"
+// import createLink from "./createLinkToPlaylist.js"
+import getPlaylistLink from "./localStorage/getPlaylistLink.js"
 
 export default function beginPlaylist(){
-    createLink()
-    .then(response => {
-        window.open(response.url, '_blank')
-    })
-    setTimeout(()=>{
-        window.close()
-    }, 100)
+    getPlaylistLink()
+
+
+    // createLink()
+    // .then(response => {
+    //     window.open(response.url, '_blank')
+    // })
+    // setTimeout(()=>{
+    //     window.close()
+    // }, 100)
 }

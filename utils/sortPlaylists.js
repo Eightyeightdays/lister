@@ -2,13 +2,14 @@ import setSortState from "./localStorage/setSortState.js"
 import { playlistOrderNode } from "../playlist.js";
 
 export default function sortPlaylists(order = playlistOrderNode.textContent){
+    console.log(`ORDER IN sortPlaylists is: ${order}`)
     let sortedFavourites;
     let sortedRest;
     let allFavourites = document.querySelectorAll(".list-title-card[favourite='true']")
     let allRest = document.querySelectorAll(".list-title-card[favourite='false']")
     let allTitles = []
 
-    if(order === "forwards"){
+    if(order === "forwards"){ //
         sortedFavourites = Array.from(allFavourites).sort((a,b) => a.id.toUpperCase() > b.id.toUpperCase())
         sortedRest = Array.from(allRest).sort((a,b) => a.id.toUpperCase() > b.id.toUpperCase())
     }else if(order === "backwards"){

@@ -39,18 +39,6 @@
         return; 
     } 
 
-    function createPlaylistLink(id){
-        let tempData = JSON.parse(localStorage.getItem("allPlaylists")); 
-        let index = tempData.findIndex(list => list.playlistName === id);
-        let tempList = tempData[index] ;
-        let videoList = tempList.playlistString;
-        let fullUrl = baseUrl + videoList;
-        let final = fullUrl.slice(0, -1);   // remove trailing comma
-        navigator.clipboard.writeText(final);
-        console.log("Playlist generated and copied to clipboard")
-        return final;
-    }
-
     function handleCommands(message){
         if(message.command === "add url"){
             let playlist = localStorage.getItem("currentPlaylist")
@@ -74,9 +62,6 @@
                 }
             })
             .catch(error => console.log(error))
-        }else if(message.command === "create link"){
-            var url = createPlaylistLink(message.id)
-            return Promise.resolve({url: url})
         }
     }
 

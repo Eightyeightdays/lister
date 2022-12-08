@@ -44,7 +44,11 @@ export default async function createPlaylist() {
     
     if(!data.playlists){
         console.log("No playlists were in storage")
-        setStorage({playlists: [newList]});
+        playlistOrderNode.textContent = "forwards"
+        setStorage({
+            playlists: [newList],
+            order: "forwards"
+        });
     }else{
         data.playlists.push(newList)
         setStorage({playlists: [...data.playlists]})

@@ -1,4 +1,4 @@
-import {currentPlaylistNode, currentPlaylistLength, playlistOrderNode, playlistLengthLabel} from "../playlist.js"
+import {currentPlaylistNode, currentPlaylistLength, playlistLengthLabel} from "../playlist.js"
 import createVideoCard from "./createVideoCard.js"
 import updatePlaylistEditDate from "./updatePlaylistEditDate.js"
 import sortPlaylists from "./sortPlaylists.js"

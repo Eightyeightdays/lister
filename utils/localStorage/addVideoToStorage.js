@@ -6,13 +6,12 @@ export default async function addVideoToStorage(details, playlistName){
     let index = data.playlists.findIndex(list => list.playlistName === playlistName)
     let currentPlaylist = data.playlists[index]
     let currentPlaylistString = currentPlaylist.playlistString
-    let newPlaylistString = data.id + currentPlaylistString // newest video first
-    
+    let newPlaylistString = details.id + currentPlaylistString // newest video first
+   
     currentPlaylist.playlistString = newPlaylistString;
     currentPlaylist.length ++;
     currentPlaylist.dateEdited = Date.now();
     currentPlaylist.videos.push(details)  
     
     setStorage({playlists:data.playlists})
-    
 }
