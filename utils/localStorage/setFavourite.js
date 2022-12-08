@@ -3,8 +3,7 @@ import sortPlaylists from "../sortPlaylists.js"
 import {currentPlaylistNode, playlistOrderNode} from "../../playlist.js"
 import setStorage from "./setStorage.js"
 
-export default function setPlaylistFavourite(){
-    let order = playlistOrderNode.textContent
+export default function setFavourite(){
     let playlistName = currentPlaylistNode.textContent
     let hyphenatedPlaylist = hyphenate(playlistName)
     let container = document.getElementById(hyphenatedPlaylist)
@@ -31,5 +30,6 @@ export default function setPlaylistFavourite(){
         setStorage({playlists: data.playlists})
     })
     
-    sortPlaylists(order)
+    sortPlaylists()
+
 }

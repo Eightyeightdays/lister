@@ -54,14 +54,13 @@ export default function createPlaylist() {
 
     document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", element)
     document.getElementById("playlist-name-input").value = ""
-
-    setCurrentPlaylist(title)
-    removeCards()
     currentPlaylistNode.textContent = title;
     currentPlaylistLength.textContent = 0;
     playlistLengthLabel.textContent = "Videos"
-    let order = playlistOrderNode.textContent
-    sortPlaylists(order)
+
+    setCurrentPlaylist(title)
+    removeCards()
+    sortPlaylists()
     displaySettings("list")
     displaySortOrder()
 }

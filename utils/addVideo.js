@@ -4,13 +4,11 @@ import updatePlaylistEditDate from "./updatePlaylistEditDate.js"
 import sortPlaylists from "./sortPlaylists.js"
 import getVideoDetails from "./getVideoDetails.js"
 import addVideoToStorage from "./localStorage/addVideoToStorage.js"
-import getPlaylistLength from "./localStorage/getPlaylistLength.js"
 
 export default async function addVideo() { 
-    let order = playlistOrderNode.textContent
-    console.log(`Order in addVideo is ${order}`)
     let playlistName = currentPlaylistNode.textContent
-    let playlistLength = await getPlaylistLength(playlistName)  
+    let playlistLength = parseInt(currentPlaylistLength.textContent)
+
     let response = await browser.tabs.query({active: true, currentWindow: true})
     let url = response[0].url
     let details = await getVideoDetails(url)
@@ -23,10 +21,12 @@ export default async function addVideo() {
         console.log(details)
         createVideoCard(details)
         updatePlaylistEditDate(Date.now())
-        sortPlaylists(order) 
+        sortPlaylists()
         addVideoToStorage(details, playlistName)
 
-        currentPlaylistLength.textContent = parseInt(playlistLength);
+        playlistLength++
+        currentPlaylistLength.textContent = playlistLength
+
         if(playlistLength === 1){
             playlistLengthLabel.textContent = "Video"
         }else{

@@ -2,7 +2,7 @@ import updatePlaylistEditDate from "./updatePlaylistEditDate.js"
 import sortPlaylists from "./sortPlaylists.js"
 import setStorage from "./localStorage/setStorage.js"
 import getStorage from "./localStorage/getStorage.js"
-import { playlistOrderNode, currentPlaylistLength, playlistLengthLabel } from "../playlist.js"
+import { currentPlaylistLength, playlistLengthLabel } from "../playlist.js"
 
 export default async function deleteVideo(id, name){
     let storage = await getStorage()
@@ -27,10 +27,9 @@ export default async function deleteVideo(id, name){
     let parent = node.closest(".video-card")
     parent.remove()
     
-    let order = playlistOrderNode.textContent
-    sortPlaylists(order)
-
+    sortPlaylists()
     setStorage({playlists: allLists}) 
+
     currentPlaylistLength.textContent = parseInt(currentPlaylist.length)
     if(currentPlaylist.length === 1){
         playlistLengthLabel.textContent = "Video"

@@ -1,7 +1,8 @@
 import hyphenate from "./hyphenate.js"
 import sortPlaylists from "./sortPlaylists.js"
 
-export default function createTitlesList(data, order){
+export default function createTitlesList(data){
+
     let title;
     data.forEach(list => {
         let hyphenatedTitle = hyphenate(list.playlistName)
@@ -19,5 +20,7 @@ export default function createTitlesList(data, order){
         }
         document.getElementById("list-title-container").insertAdjacentHTML("afterbegin", title)
     });
-    sortPlaylists(order)
+   
+    sortPlaylists()
+
 }

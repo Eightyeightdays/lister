@@ -1,7 +1,7 @@
 import setSortState from "./localStorage/setSortState.js"
+import { playlistOrderNode } from "../playlist.js";
 
-export default function sortPlaylists(order){
-    console.log(order)
+export default function sortPlaylists(order = playlistOrderNode.textContent){
     let sortedFavourites;
     let sortedRest;
     let allFavourites = document.querySelectorAll(".list-title-card[favourite='true']")
