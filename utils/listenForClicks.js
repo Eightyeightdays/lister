@@ -1,5 +1,5 @@
 import createPlaylist from "./createPlaylist.js"
-import createLink from "./createLinkToPlaylist.js"
+import getPlaylistLink from "./localStorage/getPlaylistLink.js"
 import beginPlaylist from "./beginPlaylist.js"
 import handleSort from "./handleSort.js"
 import handleClear from "./handleClear.js"
@@ -20,7 +20,7 @@ export default function listenForClicks() {
         }else if (e.target.classList.contains("add-video")) {
             handleAddVideo()
         }else if(e.target.classList.contains("create-link")){
-            createLink()
+            getPlaylistLink()
         }else if(e.target.classList.contains("list-title-card")){
             handleSelectPlaylist(e)
         }else if(e.target.id === "clear-storage"){

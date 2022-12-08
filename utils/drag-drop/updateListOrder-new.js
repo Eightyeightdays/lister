@@ -2,7 +2,7 @@ import setStorage from "../localStorage/setStorage.js"
 import getStorage from "../localStorage/getStorage.js"
 import {currentPlaylistNode} from "../../playlist.js"
 
-export default function updateListOrderNew(){   // add async/await for storage?
+export default async function updateListOrderNew(){   
     let currentPlaylist = currentPlaylistNode.textContent
     let cardList = document.querySelectorAll(".video-card")
     let newList = []
@@ -14,13 +14,12 @@ export default function updateListOrderNew(){   // add async/await for storage?
         newString += item.dataset.videoid   // 
     })
     
-    const storage = getStorage()
+    const storage = await getStorage()
     if(!storage.playlists){
         console.log("Error retrieving playlists")
         return
     }
     const playlists = storage.playlists
-    console.log(playlists)
     let index = playlists.findIndex(list => list.playlistName === currentPlaylist)
     let playlistsClone = structuredClone(playlists); // deep copy by value
     let selectedList = playlistsClone[index].videos
@@ -36,7 +35,7 @@ export default function updateListOrderNew(){   // add async/await for storage?
     
     playlistsClone[index].videos = tempArray  // update video array 
     playlistsClone[index].playlistString = newString  // update playlist url
-    // setStorage({playlists: playlists}) // WHY ARE WE NOT UPDATING USING playlistsClone ???
+    
     setStorage({playlists: playlistsClone}) // WHY ARE WE NOT UPDATING USING playlistsClone ???
 
 }

@@ -12,7 +12,7 @@ export default async function hydrateUi(){
     playlistOrderNode.textContent = storage.order;
 
     if(storage.playlists){
-        console.log("Playlists were found in storage")
+        // console.log("Playlists were found in storage")
         createTitlesList(storage.playlists, storage.order);
         showRelevantUi()
     }else{
