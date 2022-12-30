@@ -3,14 +3,17 @@
 ## Allows you to create and share anonymous playlists without needing an account
 
 ### Features
-* Create multiple lists with names up to 70 characteres long
-* Favourite a list in order to pin it to the top of the playlist titles list
-* Arrange playlist titles alphabetically, by date, or by date edited (most recent)
-* Click and drag videos to re-arrange order, then click to save
-* Click any video from the list to open in new tab
-* Click to grab a link to the current playlist which will be copied to the clipboard
-* Click to begin current playlist in new tab
-* Right click a video in order to access a menu option to add to current playlist
+- Create multiple lists with names up to 70 characters long
+- Favourite a list in order to pin it to the top of the playlist titles list
+- Arrange playlist titles alphabetically, by date, or by date edited (most recent)
+- Click the plus sign to add the current video to the list
+- Click and drag videos to re-arrange order
+- Click any video from the list to open in new tab
+- Click the chain icon to grab a link to the current playlist which will be copied to the clipboard
+- Click the play icon to begin current playlist in new tab
+- Right click a video in order to access a menu option to add to current playlist
+
+* Maximum 50 videos per playlist
 
 ### Installation
 1. Clone the repository
@@ -20,7 +23,7 @@
 5. The extension icon should now be visible in the browser
 
 ### Notes
-* As of 02/10/22 this extension is not yet in a state to be released for testing by the public, but will eventually have an official release on the Mozilla Add-on Store
+* Submitted to the Mozilla Add-on Store 30/12/22
 
 ### Possible Future Features
 * Infinite scroll to minimise load times for long playlists
