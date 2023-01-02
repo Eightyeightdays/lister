@@ -21,6 +21,7 @@ export default function listenForClicks() {
             handleAddVideo()
         }else if(e.target.classList.contains("create-link")){
             getPlaylistLink()
+            alert("Playlist link copied to clipboard")
         }else if(e.target.classList.contains("list-title-card")){
             handleSelectPlaylist(e)
         }else if(e.target.id === "clear-storage"){
