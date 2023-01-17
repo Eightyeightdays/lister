@@ -2,6 +2,8 @@
 
 ## Allows you to create and share anonymous playlists without needing an account
 
+## [Download and install directly from the Mozilla Add-ons page](https://addons.mozilla.org/en-GB/firefox/addon/youtube-playlist-creator/)
+
 ### Features
 - Create multiple lists with names up to 70 characters long
 - Favourite a list in order to pin it to the top of the playlist titles list
@@ -21,9 +23,6 @@
 3. Click on **This Firefox** and then **Load Temporary Add-on** from the **Temporary Extensions** menu
 4. Navigate to the folder where you cloned/saved the repository and click any file in order to add the extension
 5. The extension icon should now be visible in the browser
-
-### Notes
-* Submitted to the Mozilla Add-on Store 30/12/22
 
 ### Possible Future Features
 * Infinite scroll to minimise load times for long playlists
